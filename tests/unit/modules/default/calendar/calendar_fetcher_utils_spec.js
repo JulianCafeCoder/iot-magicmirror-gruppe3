@@ -10,7 +10,7 @@ describe("Calendar fetcher utils test", () => {
 		excludedEvents: [],
 		includePastEvents: false,
 		maximumEntries: 10,
-		maximumNumberOfDays: 365
+		maximumNumberOfDays: 367
 	};
 
 	describe("filterEvents", () => {

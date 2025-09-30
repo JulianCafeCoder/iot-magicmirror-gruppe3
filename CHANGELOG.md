@@ -7,6 +7,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ❤️ **Donate:** Enjoying MagicMirror²? [Please consider a donation!](https://magicmirror.builders/#donate) With your help we can continue to improve the MagicMirror².
 
+## [2.33.0] - 2025-10-01
+
+Thanks to: @Crazylegstoo, @dathbe, @m-idler, @plebcity, @khassel, @KristjanESPERANTO, @rejas and @sdetweil!
+
+> ⚠️ This release needs nodejs version `v22.18.0 or higher`
+
+### Added
+
+- Add configuration option for `User-Agent`, used by calendar & news module (#3255)
+- [linter] Add prettier plugin for nunjuck templates (#3887)
+- [core] Add clear log for occupied port at startup (#3890)
+
+### Changed
+
+- [clock] Add CSS to prevent line breaking of sunset/sunrise time display (#3816)
+- [core] Enhance system information logging format and include additional env and RAM details (#3839, #3843)
+- [refactor] Add new file `js/module_functions.js` to move code used in several modules to one place (#3837)
+- [refactor] Use global.root_path where possible and add tests for config:check (#3883, #3885, #3886, #3889)
+- [tests] refactor: simplify jest config file (#3844)
+- [tests] refactor: extract constants for weather electron tests (#3845)
+- [tests] refactor: add `setupDOMEnvironment` helper function to eliminate repetitive JSDOM setup code (#3860)
+- [tests] replace `console` with `Log` in calendar `debug.js` to avoid exception in eslint config (#3846)
+- [tests] speed up e2e tests, cleanup and stabilize weather e2e tests, update snapshot url (#3847, #3848, #3861)
+- [tests] refactor translation tests (#3866)
+  - Remove `sinon` dependency in favor of Jest native mocking
+  - Unify test helper functions across translation test suites
+  - Rename `setupDOMEnvironment` to `createTranslationTestEnvironment` for consistency
+  - Simplify DOM setup by removing unnecessary Promise/async patterns
+  - Avoid potential port conflicts by using port 3001 for translator unit tests
+  - Improve test reliability and maintainability
+- [tests] add alert module tests for different welcome_message configurations (#3867)
+- [lint-staged] use `prettier --write --ignore-unknown` in `lint-staged` to avoid errors on unsupported files (#3888)
+
+### Updated
+
+- [calendar] Update defaultSymbol name and also the link to the icon search site (#3879)
+- [core] Update dependencies including electron to v38 as well as github actions (#3831, #3849, #3857, #3858, #3872, #3876, #3882, #3891, #3896)
+- [weather] Update feels_like temperature calculation formula (#3869)
+- [weather] Update null value handling for weather type (#3892)
+- [layout] Update styles for weather and calendar (#3894)
+
+### Fixed
+
+- [calendar] Fixed broken unittest that only broke on the 1st of July and 1st of january (#3830)
+- [clock] Fixed missing icons when no other modules with icons is loaded (#3834)
+- [weather] Fixed handling of empty values in weathergov providers handling of precipitationAmount (#3859)
+- [calendar] Fix regression handling of limit days (#3840)
+- [calendar] Fixed regression of calendarfetcherutils.shouldEventBeExcluded (#3841)
+- [core] Fixed socket.io timeout when server is slow to send notification, notification lost at client (#3380)
+- [tests] refactor AnimateCSS tests after jsdom 27 upgrade (#3891)
+- [weather] Use `apparent_temperature` data from openmeteo's hourly weather for current feelsLikeTemp (#3868).
+- [weather] Updated envcanada Provider to use new database/URL schema for accessing weather data (#3878).
+
 ## [2.32.0] - 2025-07-01
 
 Thanks to: @bughaver, @bugsounet, @khassel, @KristjanESPERANTO, @plebcity, @rejas, @sdetweil.
@@ -260,7 +313,7 @@ For more info, please read the following post: [A New Chapter for MagicMirror: T
 ### Added
 
 - Output of system information to the console for troubleshooting (#3328 and #3337), ignore errors under aarch64 (#3349)
-- [core] Add `eslint-plugin-package-json` to lint the `package.json` files (#3368)
+- [linter] Add `eslint-plugin-package-json` to lint the `package.json` files (#3368)
 - [weather] `showHumidity` config is now a string describing where to show this element. Supported values: "wind", "temp", "feelslike", "below", "none". (#3330)
 - electron-rebuild test suite for electron and 3rd party modules compatibility (#3392)
 - Create MM² icon and attach it to electron process (#3407)
@@ -277,7 +330,7 @@ For more info, please read the following post: [A New Chapter for MagicMirror: T
 - Update translations for estonian (#3371)
 - Update electron to v29 and update other dependencies
 - [calendar] fullDay events over several days now show the left days from the first day on and 'today' on the last day
-- Update layout of current weather indoor values
+- [weather] Update layout of current weather indoor values
 
 ### Fixed
 
@@ -422,7 +475,7 @@ Special thanks to @khassel, @rejas and @sdetweil for taking over most (if not al
 - Added UV Index to hourly and current Weather, with support for Openmeteo
 - Added tests for serveronly
 - Set Timezone `Europe/Berlin` in unit tests (needed for new formatTime tests)
-- Added no-param-reassign eslint rule and fix warnings
+- [linter] Added no-param-reassign eslint rule and fix warnings
 - [updatenotification] Added `sendUpdatesNotifications` feature. Broadcast update with `UPDATES` notification to other modules
 - [updatenotification] Allow force scanning with `SCAN_UPDATES` notification from other modules
 - Added per-calendar fetchInterval
@@ -687,7 +740,7 @@ Special thanks to the following contributors: @AmpioRosso, @eouia, @fewieden, @j
 ### Fixed
 
 - Fixed wrong file `kr.json` to `ko.json`. Use language code 'ko' instead of 'kr' for Korean language.
-- Fixed `feels_like` data from openweathermap's current weather being ignored (#2678).
+- [weather] Fixed `feels_like` data from openweathermap's current weather being ignored (#2678).
 - Fixed chaotic newsfeed display after network connection loss thanks to @jalibu (#2638).
 - Fixed incorrect time zone correction of recurring full day events (#2632 and #2634).
 - Fixed e2e tests by increasing testTimeout.
@@ -725,7 +778,7 @@ Special thanks to the following contributors: @apiontek, @eouia, @jupadin, @khas
 - Actually test all js and css files when lint script is run.
 - Updated jsdocs and print warnings during testing too.
 - Updated weathergov provider to try fetching not just current, but also forecast, when API URLs available.
-- Refactored clock layout.
+- [clock] Refactored clock layout.
 - Refactored methods from weather-providers into weatherobject (isDaytime, updateSunTime).
 - Use of `logger.js` in jest tests.
 - Run prettier over all relevant files.
@@ -1771,6 +1824,7 @@ It includes (but is not limited to) the following features:
 
 This was part of the blogpost: [https://michaelteeuw.nl/post/83916869600/magic-mirror-part-vi-production-of-the](https://michaelteeuw.nl/post/83916869600/magic-mirror-part-vi-production-of-the)
 
+[2.33.0]: https://github.com/MagicMirrorOrg/MagicMirror/compare/v2.32.0...v2.33.0
 [2.32.0]: https://github.com/MagicMirrorOrg/MagicMirror/compare/v2.31.0...v2.32.0
 [2.31.0]: https://github.com/MagicMirrorOrg/MagicMirror/compare/v2.30.0...v2.31.0
 [2.30.0]: https://github.com/MagicMirrorOrg/MagicMirror/compare/v2.29.0...v2.30.0

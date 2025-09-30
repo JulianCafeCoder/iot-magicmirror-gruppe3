@@ -8,7 +8,7 @@ Module.register("calendar", {
 		limitDays: 0, // Limit the number of days shown, 0 = no limit
 		pastDaysCount: 0,
 		displaySymbol: true,
-		defaultSymbol: "calendar-alt", // Fontawesome Symbol see https://fontawesome.com/cheatsheet?from=io
+		defaultSymbol: "calendar-days", // Fontawesome Symbol see https://fontawesome.com/search?ic=free&o=r
 		defaultSymbolClassName: "fas fa-fw fa-",
 		showLocation: false,
 		displayRepeatingCountTitle: false,
@@ -168,8 +168,8 @@ Module.register("calendar", {
 
 		this.selfUpdate();
 	},
-	notificationReceived (notification, payload, sender) {
 
+	notificationReceived (notification, payload, sender) {
 		if (notification === "FETCH_CALENDAR") {
 			if (this.hasCalendarURL(payload.url)) {
 				this.sendSocketNotification(notification, { url: payload.url, id: this.identifier });
@@ -217,7 +217,6 @@ Module.register("calendar", {
 
 	// Override dom generator.
 	getDom () {
-		const ONE_SECOND = 1000; // 1,000 milliseconds
 		const events = this.createEventList(true);
 		const wrapper = document.createElement("table");
 		wrapper.className = this.config.tableClass;
@@ -308,15 +307,12 @@ Module.register("calendar", {
 				}
 
 				const symbolClass = this.symbolClassForUrl(event.url);
-				symbolWrapper.className = `symbol align-right ${symbolClass}`;
+				symbolWrapper.className = `symbol ${symbolClass}`;
 
 				const symbols = this.symbolsForEvent(event);
-				symbols.forEach((s, index) => {
+				symbols.forEach((s) => {
 					const symbol = document.createElement("span");
 					symbol.className = s;
-					if (index > 0) {
-						symbol.style.paddingLeft = "5px";
-					}
 					symbolWrapper.appendChild(symbol);
 				});
 				eventWrapper.appendChild(symbolWrapper);
@@ -601,7 +597,6 @@ Module.register("calendar", {
 	 */
 	createEventList (limitNumberOfEntries) {
 		let now = moment();
-		let today = now.clone().startOf("day");
 		let future = now.clone().startOf("day").add(this.config.maximumNumberOfDays, "days");
 
 		let events = [];
@@ -705,30 +700,24 @@ Module.register("calendar", {
 		 * Limit the number of days displayed
 		 * If limitDays is set > 0, limit display to that number of days
 		 */
-		if (this.config.limitDays > 0) {
-			let newEvents = [];
-			let lastDate = today.clone().subtract(1, "days");
-			let days = 0;
-			for (const ev of events) {
-				let eventDate = this.timestampToMoment(ev.startDate);
+		if (this.config.limitDays > 0 && events.length > 0) { // watch out for initial display before events arrive from helper
+			// Group all events by date, events on the same date will be in a list with the key being the date.
+			const eventsByDate = Object.groupBy(events, (ev) => this.timestampToMoment(ev.startDate).format("YYYY-MM-DD"));
+			const newEvents = [];
+			let currentDate = moment();
+			let daysCollected = 0;
 
-				/*
-				 * if date of event is later than lastdate
-				 * check if we already are showing max unique days
-				 */
-				if (eventDate.isAfter(lastDate)) {
-					// if the only entry in the first day is a full day event that day is not counted as unique
-					if (!this.config.limitDaysNeverSkip && newEvents.length === 1 && days === 1 && newEvents[0].fullDayEvent) {
-						days--;
-					}
-					days++;
-					if (days > this.config.limitDays) {
-						continue;
-					} else {
-						lastDate = eventDate;
-					}
+			while (daysCollected < this.config.limitDays) {
+				const dateStr = currentDate.format("YYYY-MM-DD");
+				// Check if there are events on the currentDate
+				if (eventsByDate[dateStr] && eventsByDate[dateStr].length > 0) {
+					// If there are any events today then get all those events and select the currently active events and the events that are starting later in the day.
+					newEvents.push(...eventsByDate[dateStr].filter((ev) => this.timestampToMoment(ev.endDate).isAfter(moment())));
+					// Since we found a day with events, increase the daysCollected by 1
+					daysCollected++;
 				}
-				newEvents.push(ev);
+				// Search for the next day
+				currentDate.add(1, "day");
 			}
 			events = newEvents;
 		}
@@ -887,7 +876,7 @@ Module.register("calendar", {
 	 * @param {string} url The calendar url
 	 * @param {string} property The property to look for
 	 * @param {string} defaultValue The value if the property is not found
-	 * @returns {*} The property
+	 * @returns {property} The property
 	 */
 	getCalendarProperty (url, property, defaultValue) {
 		for (const calendar of this.config.calendars) {

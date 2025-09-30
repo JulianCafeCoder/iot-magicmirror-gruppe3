@@ -5,6 +5,8 @@ const iconv = require("iconv-lite");
 const { htmlToText } = require("html-to-text");
 const Log = require("logger");
 const NodeHelper = require("node_helper");
+const { getUserAgent } = require("#server_functions");
+const { scheduleTimer } = require("#module_functions");
 
 /**
  * Responsible for requesting an update on the set interval and broadcasting the data.
@@ -79,12 +81,12 @@ const NewsfeedFetcher = function (url, reloadInterval, encoding, logFeedWarnings
 
 		parser.on("error", (error) => {
 			fetchFailedCallback(this, error);
-			scheduleTimer();
+			scheduleTimer(reloadTimer, reloadIntervalMS, fetchNews);
 		});
 
 		//"end" event is not broadcast if the feed is empty but "finish" is used for both
 		parser.on("finish", () => {
-			scheduleTimer();
+			scheduleTimer(reloadTimer, reloadIntervalMS, fetchNews);
 		});
 
 		parser.on("ttl", (minutes) => {
@@ -100,9 +102,8 @@ const NewsfeedFetcher = function (url, reloadInterval, encoding, logFeedWarnings
 			}
 		});
 
-		const nodeVersion = Number(process.version.match(/^v(\d+\.\d+)/)[1]);
 		const headers = {
-			"User-Agent": `Mozilla/5.0 (Node.js ${nodeVersion}) MagicMirror/${global.version}`,
+			"User-Agent": getUserAgent(),
 			"Cache-Control": "max-age=0, no-cache, no-store, must-revalidate",
 			Pragma: "no-cache"
 		};
@@ -120,21 +121,8 @@ const NewsfeedFetcher = function (url, reloadInterval, encoding, logFeedWarnings
 			})
 			.catch((error) => {
 				fetchFailedCallback(this, error);
-				scheduleTimer();
+				scheduleTimer(reloadTimer, reloadIntervalMS, fetchNews);
 			});
-	};
-
-	/**
-	 * Schedule the timer for the next update.
-	 */
-	const scheduleTimer = function () {
-		if (process.env.JEST_WORKER_ID === undefined) {
-			// only set timer when not running in jest
-			clearTimeout(reloadTimer);
-			reloadTimer = setTimeout(function () {
-				fetchNews();
-			}, reloadIntervalMS);
-		}
 	};
 
 	/* public methods */

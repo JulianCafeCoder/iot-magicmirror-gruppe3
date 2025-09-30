@@ -3,7 +3,7 @@ import globals from "globals";
 import {flatConfigs as importX} from "eslint-plugin-import-x";
 import jest from "eslint-plugin-jest";
 import js from "@eslint/js";
-import jsdoc from "eslint-plugin-jsdoc";
+import jsdocPlugin from "eslint-plugin-jsdoc";
 import packageJson from "eslint-plugin-package-json";
 import stylistic from "@stylistic/eslint-plugin";
 
@@ -23,8 +23,8 @@ export default defineConfig([
 				moment: "readonly"
 			}
 		},
-		plugins: {js, jsdoc, stylistic},
-		extends: [importX.recommended, jest.configs["flat/recommended"], "js/recommended", jsdoc.configs["flat/recommended"], "stylistic/all"],
+		plugins: {js, stylistic},
+		extends: [importX.recommended, jest.configs["flat/recommended"], "js/recommended", jsdocPlugin.configs["flat/recommended"], "stylistic/all"],
 		rules: {
 			"@stylistic/array-element-newline": ["error", "consistent"],
 			"@stylistic/arrow-parens": ["error", "always"],
@@ -88,7 +88,6 @@ export default defineConfig([
 		files: ["**/*.js"],
 		ignores: [
 			"clientonly/index.js",
-			"modules/default/calendar/debug.js",
 			"js/logger.js",
 			"tests/**/*.js"
 		],

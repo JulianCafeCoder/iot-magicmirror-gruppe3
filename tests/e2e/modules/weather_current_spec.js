@@ -1,17 +1,15 @@
 const helpers = require("../helpers/global-setup");
 const weatherFunc = require("../helpers/weather-functions");
-const { cleanupMockData } = require("../../utils/weather_mocker");
 
 describe("Weather module", () => {
 	afterAll(async () => {
-		await helpers.stopApplication();
-		await cleanupMockData();
+		await weatherFunc.stopApplication();
 	});
 
 	describe("Current weather", () => {
 		describe("Default configuration", () => {
 			beforeAll(async () => {
-				await weatherFunc.startApp("tests/configs/modules/weather/currentweather_default.js", {});
+				await weatherFunc.startApplication("tests/configs/modules/weather/currentweather_default.js", {});
 			});
 
 			it("should render wind speed and wind direction", async () => {
@@ -20,12 +18,16 @@ describe("Weather module", () => {
 
 			it("should render temperature with icon", async () => {
 				await expect(weatherFunc.getText(".weather .large span.light.bright", "1.5°")).resolves.toBe(true);
+
+				const elem = await helpers.waitForElement(".weather .large span.weathericon");
+				expect(elem).not.toBeNull();
 			});
 
 			it("should render feels like temperature", async () => {
 				// Template contains &nbsp; which renders as \xa0
 				await expect(weatherFunc.getText(".weather .normal.medium.feelslike span.dimmed", "93.7\xa0 Feels like -5.6°")).resolves.toBe(true);
 			});
+
 			it("should render humidity next to feels-like", async () => {
 				await expect(weatherFunc.getText(".weather .normal.medium.feelslike span.dimmed .humidity", "93.7")).resolves.toBe(true);
 			});
@@ -34,7 +36,7 @@ describe("Weather module", () => {
 
 	describe("Compliments Integration", () => {
 		beforeAll(async () => {
-			await weatherFunc.startApp("tests/configs/modules/weather/currentweather_compliments.js", {});
+			await weatherFunc.startApplication("tests/configs/modules/weather/currentweather_compliments.js", {});
 		});
 
 		it("should render a compliment based on the current weather", async () => {
@@ -44,7 +46,7 @@ describe("Weather module", () => {
 
 	describe("Configuration Options", () => {
 		beforeAll(async () => {
-			await weatherFunc.startApp("tests/configs/modules/weather/currentweather_options.js", {});
+			await weatherFunc.startApplication("tests/configs/modules/weather/currentweather_options.js", {});
 		});
 
 		it("should render windUnits in beaufort", async () => {
@@ -72,7 +74,7 @@ describe("Weather module", () => {
 
 	describe("Current weather with imperial units", () => {
 		beforeAll(async () => {
-			await weatherFunc.startApp("tests/configs/modules/weather/currentweather_units.js", {});
+			await weatherFunc.startApplication("tests/configs/modules/weather/currentweather_units.js", {});
 		});
 
 		it("should render wind in imperial units", async () => {

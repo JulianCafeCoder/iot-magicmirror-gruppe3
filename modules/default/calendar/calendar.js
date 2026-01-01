@@ -68,8 +68,6 @@ Module.register("calendar", {
 		updateOnFetch: true
 	},
 
-	requiresVersion: "2.1.0",
-
 	// Define required scripts.
 	getStyles () {
 		return ["calendar.css", "font-awesome.css"];
@@ -96,12 +94,12 @@ Module.register("calendar", {
 		Log.info(`Starting module: ${this.name}`);
 
 		if (this.config.colored) {
-			Log.warn("Your are using the deprecated config values 'colored'. Please switch to 'coloredSymbol' & 'coloredText'!");
+			Log.warn("[calendar] Your are using the deprecated config values 'colored'. Please switch to 'coloredSymbol' & 'coloredText'!");
 			this.config.coloredText = true;
 			this.config.coloredSymbol = true;
 		}
 		if (this.config.coloredSymbolOnly) {
-			Log.warn("Your are using the deprecated config values 'coloredSymbolOnly'. Please switch to 'coloredSymbol' & 'coloredText'!");
+			Log.warn("[calendar] Your are using the deprecated config values 'coloredSymbolOnly'. Please switch to 'coloredSymbol' & 'coloredText'!");
 			this.config.coloredText = false;
 			this.config.coloredSymbol = true;
 		}
@@ -143,7 +141,7 @@ Module.register("calendar", {
 
 			// we check user and password here for backwards compatibility with old configs
 			if (calendar.user && calendar.pass) {
-				Log.warn("Deprecation warning: Please update your calendar authentication configuration.");
+				Log.warn("[calendar] Deprecation warning: Please update your calendar authentication configuration.");
 				Log.warn("https://docs.magicmirror.builders/modules/calendar.html#configuration-options");
 				calendar.auth = {
 					user: calendar.user,
@@ -160,7 +158,7 @@ Module.register("calendar", {
 
 		// for backward compatibility titleReplace
 		if (typeof this.config.titleReplace !== "undefined") {
-			Log.warn("Deprecation warning: Please consider upgrading your calendar titleReplace configuration to customEvents.");
+			Log.warn("[calendar] Deprecation warning: Please consider upgrading your calendar titleReplace configuration to customEvents.");
 			for (const [titlesearchstr, titlereplacestr] of Object.entries(this.config.titleReplace)) {
 				this.config.customEvents.push({ keyword: ".*", transform: { search: titlesearchstr, replace: titlereplacestr } });
 			}
@@ -186,13 +184,27 @@ Module.register("calendar", {
 
 		if (notification === "CALENDAR_EVENTS") {
 			if (this.hasCalendarURL(payload.url)) {
-				this.calendarData[payload.url] = payload.events;
+				// have we received events for this url
+				if (!this.calendarData[payload.url]) {
+					// no, setup the structure to hold the info
+					this.calendarData[payload.url] = { events: null, checksum: null };
+				}
+				// save the event list
+				this.calendarData[payload.url].events = payload.events;
+
 				this.error = null;
 				this.loaded = true;
 
 				if (this.config.broadcastEvents) {
 					this.broadcastEvents();
 				}
+				// if the checksum is the same
+				if (this.calendarData[payload.url].checksum === payload.checksum) {
+					// then don't update the UI
+					return;
+				}
+				// haven't seen or the checksum is different
+				this.calendarData[payload.url].checksum = payload.checksum;
 
 				if (!this.config.updateOnFetch) {
 					if (this.calendarDisplayer[payload.url] === undefined) {
@@ -201,7 +213,7 @@ Module.register("calendar", {
 						// set this calendar as displayed
 						this.calendarDisplayer[payload.url] = true;
 					} else {
-						Log.debug("[Calendar] DOM not updated waiting self update()");
+						Log.debug("[calendar] DOM not updated waiting self update()");
 					}
 					return;
 				}
@@ -332,7 +344,9 @@ Module.register("calendar", {
 					const thisYear = eventStartDateMoment.year(),
 						yearDiff = thisYear - event.firstYear;
 
-					repeatingCountTitle = `, ${yearDiff} ${repeatingCountTitle}`;
+					if (yearDiff > 0) {
+						repeatingCountTitle = `, ${yearDiff} ${repeatingCountTitle}`;
+					}
 				}
 			}
 
@@ -411,7 +425,7 @@ Module.register("calendar", {
 					timeWrapper.innerHTML = CalendarUtils.capFirst(eventStartDateMoment.format(this.config.dateFormat));
 					// Add end time if showEnd
 					if (this.config.showEnd) {
-						// and has a duation
+						// and has a duration
 						if (event.startDate !== event.endDate) {
 							timeWrapper.innerHTML += "-";
 							timeWrapper.innerHTML += CalendarUtils.capFirst(eventEndDateMoment.format(this.config.dateEndFormat));
@@ -461,10 +475,10 @@ Module.register("calendar", {
 					if (eventStartDateMoment.isSameOrAfter(now) || (event.fullDayEvent && eventEndDateMoment.diff(now, "days") === 0)) {
 						// Use relative time
 						if (!this.config.hideTime && !event.fullDayEvent) {
-							Log.debug("event not hidden and not fullday");
+							Log.debug("[calendar] event not hidden and not fullday");
 							timeWrapper.innerHTML = `${CalendarUtils.capFirst(eventStartDateMoment.calendar(null, { sameElse: this.config.dateFormat }))}`;
 						} else {
-							Log.debug("event full day or hidden");
+							Log.debug("[calendar] event full day or hidden");
 							timeWrapper.innerHTML = `${CalendarUtils.capFirst(
 								eventStartDateMoment.calendar(null, {
 									sameDay: this.config.showTimeToday ? "LT" : `[${this.translate("TODAY")}]`,
@@ -491,9 +505,9 @@ Module.register("calendar", {
 									timeWrapper.innerHTML = CalendarUtils.capFirst(this.translate("DAYAFTERTOMORROW"));
 								}
 							}
-							Log.info("event fullday");
+							Log.info("[calendar] event fullday");
 						} else if (eventStartDateMoment.diff(now, "h") < this.config.getRelative) {
-							Log.info("not full day but within getrelative size");
+							Log.info("[calendar] not full day but within getRelative size");
 							// If event is within getRelative hours, display 'in xxx' time format or moment.fromNow()
 							timeWrapper.innerHTML = `${CalendarUtils.capFirst(eventStartDateMoment.fromNow())}`;
 						}
@@ -602,7 +616,7 @@ Module.register("calendar", {
 		let events = [];
 
 		for (const calendarUrl in this.calendarData) {
-			const calendar = this.calendarData[calendarUrl];
+			const calendar = this.calendarData[calendarUrl].events;
 			let remainingEntries = this.maximumEntriesForUrl(calendarUrl);
 			let maxPastDaysCompare = now.clone().subtract(this.maximumPastDaysForUrl(calendarUrl), "days");
 			let by_url_calevents = [];
@@ -680,14 +694,14 @@ Module.register("calendar", {
 				by_url_calevents.sort(function (a, b) {
 					return a.startDate - b.startDate;
 				});
-				Log.debug(`pushing ${by_url_calevents.length} events to total with room for ${remainingEntries}`);
+				Log.debug(`[calendar] pushing ${by_url_calevents.length} events to total with room for ${remainingEntries}`);
 				events = events.concat(by_url_calevents.slice(0, remainingEntries));
-				Log.debug(`events for calendar=${events.length}`);
+				Log.debug(`[calendar] events for calendar=${events.length}`);
 			} else {
 				events = events.concat(by_url_calevents);
 			}
 		}
-		Log.info(`sorting events count=${events.length}`);
+		Log.info(`[calendar] sorting events count=${events.length}`);
 		events.sort(function (a, b) {
 			return a.startDate - b.startDate;
 		});
@@ -721,7 +735,7 @@ Module.register("calendar", {
 			}
 			events = newEvents;
 		}
-		Log.info(`slicing events total maxcount=${this.config.maximumEntries}`);
+		Log.info(`[calendar] slicing events total maxCount=${this.config.maximumEntries}`);
 		return events.slice(0, this.config.maximumEntries);
 	},
 
@@ -876,7 +890,7 @@ Module.register("calendar", {
 	 * @param {string} url The calendar url
 	 * @param {string} property The property to look for
 	 * @param {string} defaultValue The value if the property is not found
-	 * @returns {property} The property
+	 * @returns {string} The property
 	 */
 	getCalendarProperty (url, property, defaultValue) {
 		for (const calendar of this.config.calendars) {
@@ -909,7 +923,7 @@ Module.register("calendar", {
 
 	/**
 	 * Broadcasts the events to all other modules for reuse.
-	 * The all events available in one array, sorted on startdate.
+	 * The all events available in one array, sorted on startDate.
 	 */
 	broadcastEvents () {
 		const eventList = this.createEventList(false);
@@ -936,7 +950,7 @@ Module.register("calendar", {
 		setTimeout(
 			() => {
 				setInterval(() => {
-					Log.debug("[Calendar] self update");
+					Log.debug("[calendar] self update");
 					if (this.config.updateOnFetch) {
 						this.updateDom(1);
 					} else {

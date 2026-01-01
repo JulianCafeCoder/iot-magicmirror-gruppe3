@@ -60,7 +60,7 @@ WeatherProvider.register("envcanada", {
 	 * Called when the weather provider is started
 	 */
 	start () {
-		Log.info(`Weather provider: ${this.providerName} started.`);
+		Log.info(`[weatherprovider.envcanada] ${this.providerName} started.`);
 		this.setFetchedLocation(this.config.location);
 	},
 
@@ -101,15 +101,15 @@ WeatherProvider.register("envcanada", {
 	 *    city specified in the Weather module Config information
 	 */
 	fetchCommon (target) {
-		const forecastURL = this.getUrl(); // Get the approriate URL for the MSC Datamart Index page
+		const forecastURL = this.getUrl(); // Get the appropriate URL for the MSC Datamart Index page
 
-		Log.debug(`[weather.envcanada] ${target} Index url: ${forecastURL}`);
+		Log.debug(`[weatherprovider.envcanada] ${target} Index url: ${forecastURL}`);
 
 		this.fetchData(forecastURL, "xml") // Query the Index page URL
 			.then((indexData) => {
 				if (!indexData) {
 					// Did not receive usable new data.
-					Log.info(`weather.envcanada ${target} - did not receive usable index data`);
+					Log.info(`[weatherprovider.envcanada] ${target} - did not receive usable index data`);
 					this.updateAvailable(); // If there were issues, update anyways to reset timer
 					return;
 				}
@@ -127,13 +127,13 @@ WeatherProvider.register("envcanada", {
 				const fileSuffix = `${this.config.siteCode}_en.xml`; // Build city filename
 				const nextFile = indexData.body.innerHTML.split(fileSuffix); // Find filename on Index page
 
-				if (nextFile.length > 1) { // Parse out the full unqiue file city filename
+				if (nextFile.length > 1) { // Parse out the full unique file city filename
 					// Find the last occurrence
 					forecastFile = nextFile[nextFile.length - 2].slice(-41) + fileSuffix;
 					forecastFileURL = forecastURL + forecastFile; // Create full URL to the city's weather data
 				}
 
-				Log.debug(`[weather.envcanada] ${target} Citypage url: ${forecastFileURL}`);
+				Log.debug(`[weatherprovider.envcanada] ${target} Citypage url: ${forecastFileURL}`);
 
 				/*
 				 * If the Citypage filename has not changed since the last Weather refresh, the forecast has not changed and
@@ -141,19 +141,19 @@ WeatherProvider.register("envcanada", {
 				 */
 
 				if (target === "Current" && this.lastCityPageCurrent === forecastFileURL) {
-					Log.debug(`[weather.envcanada] ${target} - Newest Citypage has already been seen - skipping!`);
+					Log.debug(`[weatherprovider.envcanada] ${target} - Newest Citypage has already been seen - skipping!`);
 					this.updateAvailable(); // Update anyways to reset refresh timer
 					return;
 				}
 
 				if (target === "Forecast" && this.lastCityPageForecast === forecastFileURL) {
-					Log.debug(`[weather.envcanada] ${target} - Newest Citypage has already been seen - skipping!`);
+					Log.debug(`[weatherprovider.envcanada] ${target} - Newest Citypage has already been seen - skipping!`);
 					this.updateAvailable(); // Update anyways to reset refresh timer
 					return;
 				}
 
 				if (target === "Hourly" && this.lastCityPageHourly === forecastFileURL) {
-					Log.debug(`[weather.envcanada] ${target} - Newest Citypage has already been seen - skipping!`);
+					Log.debug(`[weatherprovider.envcanada] ${target} - Newest Citypage has already been seen - skipping!`);
 					this.updateAvailable(); // Update anyways to reset refresh timer
 					return;
 				}
@@ -162,7 +162,7 @@ WeatherProvider.register("envcanada", {
 					.then((cityData) => {
 						if (!cityData) {
 							// Did not receive usable new data.
-							Log.info(`weather.envcanada ${target} - did not receive usable citypage data`);
+							Log.info(`[weatherprovider.envcanada] ${target} - did not receive usable citypage data`);
 							return;
 						}
 
@@ -170,7 +170,7 @@ WeatherProvider.register("envcanada", {
 						 * With the city's weather data read, parse the resulting XML document for the appropriate weather data
 						 * elements to create a weather object. Next, set Weather modules details from that object.
 						 */
-						Log.debug(`[weather.envcanada] ${target} - Citypage has been read and will be processed for updates`);
+						Log.debug(`[weatherprovider.envcanada] ${target} - Citypage has been read and will be processed for updates`);
 
 						if (target === "Current") {
 							const currentWeather = this.generateWeatherObjectFromCurrentWeather(cityData);
@@ -191,12 +191,12 @@ WeatherProvider.register("envcanada", {
 						}
 					})
 					.catch(function (cityRequest) {
-						Log.info(`weather.envcanada ${target} - could not load citypage data from: ${forecastFileURL}`);
+						Log.info(`[weatherprovider.envcanada] ${target} - could not load citypage data from: ${forecastFileURL}`);
 					})
 					.finally(() => this.updateAvailable()); // Update no matter what to reset weather refresh timer
 			})
 			.catch(function (indexRequest) {
-				Log.error(`weather.envcanada ${target} - could not load index data ... `, indexRequest);
+				Log.error(`[weatherprovider.envcanada] ${target} - could not load index data ... `, indexRequest);
 				this.updateAvailable(); // If there were issues, update anyways to reset timer
 			});
 	},
@@ -208,7 +208,7 @@ WeatherProvider.register("envcanada", {
 	 *   Fixed value + Prov code specified in Weather module Config.js + current hour as GMT
 	 */
 	getUrl () {
-		let forecastURL = `https://dd.weather.gc.ca/citypage_weather/${this.config.provCode}`;
+		let forecastURL = `https://dd.weather.gc.ca/today/citypage_weather/${this.config.provCode}`;
 		const hour = this.getCurrentHourGMT();
 		forecastURL += `/${hour}/`;
 		return forecastURL;
@@ -244,7 +244,12 @@ WeatherProvider.register("envcanada", {
 			currentWeather.temperature = this.cacheCurrentTemp;
 		}
 
-		currentWeather.windSpeed = WeatherUtils.convertWindToMs(ECdoc.querySelector("siteData currentConditions wind speed").textContent);
+		if (ECdoc.querySelector("siteData currentConditions wind speed").textContent === "calm") {
+			currentWeather.windSpeed = "0";
+		} else {
+			currentWeather.windSpeed = WeatherUtils.convertWindToMs(ECdoc.querySelector("siteData currentConditions wind speed").textContent);
+		}
+
 		currentWeather.windFromDirection = ECdoc.querySelector("siteData currentConditions wind bearing").textContent;
 
 		currentWeather.humidity = ECdoc.querySelector("siteData currentConditions relativeHumidity").textContent;
@@ -320,7 +325,7 @@ WeatherProvider.register("envcanada", {
 		 * off and Element 0 will contain Current Tonight. From there, the next 5 days will be contained in
 		 * Elements 1/2, 3/4, 5/6, 7/8, and 9/10. As well, Element 11 will contain a forecast for a 6th day,
 		 * but only for the Today portion (not Tonight). This module will create a 6-day forecast using
-		 * Elements 0 to 11, and will ignore the additional Todat forecast in Element 11.
+		 * Elements 0 to 11, and will ignore the additional Today forecast in Element 11.
 		 *
 		 * We need to determine if Element 0 is showing the forecast for Current Today or Current Tonight.
 		 * This is required to understand how Min and Max temperature will be determined, and to understand
@@ -426,7 +431,7 @@ WeatherProvider.register("envcanada", {
 
 		/*
 		 * The EC hourly forecast is held in a 24-element array - Elements 0 to 23 - with Element 0 holding
-		 * the forecast for the next 'on the hour' timeslot. This means the array is a rolling 24 hours.
+		 * the forecast for the next 'on the hour' time slot. This means the array is a rolling 24 hours.
 		 */
 		const hourGroup = ECdoc.querySelectorAll("siteData hourlyForecastGroup hourlyForecast");
 
@@ -459,7 +464,7 @@ WeatherProvider.register("envcanada", {
 	},
 
 	/*
-	 * Determine Min and Max temp based on a supplied Forecast Element index and a boolen that denotes if
+	 * Determine Min and Max temp based on a supplied Forecast Element index and a boolean that denotes if
 	 * the next Forecast element should be considered - i.e. look at Today *and* Tonight vs.Tonight-only
 	 */
 	setMinMaxTemps (weather, foreGroup, today, fullDay, currentTemp) {

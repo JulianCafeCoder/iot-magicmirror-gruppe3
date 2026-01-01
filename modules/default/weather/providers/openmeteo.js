@@ -155,7 +155,7 @@ WeatherProvider.register("openmeteo", {
 				this.setCurrentWeather(currentWeather);
 			})
 			.catch(function (request) {
-				Log.error("Could not load data ... ", request);
+				Log.error("[weatherprovider.openmeteo] Could not load data ... ", request);
 			})
 			.finally(() => this.updateAvailable());
 	},
@@ -173,7 +173,7 @@ WeatherProvider.register("openmeteo", {
 				this.setWeatherForecast(dailyForecast);
 			})
 			.catch(function (request) {
-				Log.error("Could not load data ... ", request);
+				Log.error("[weatherprovider.openmeteo] Could not load data ... ", request);
 			})
 			.finally(() => this.updateAvailable());
 	},
@@ -191,7 +191,7 @@ WeatherProvider.register("openmeteo", {
 				this.setWeatherHourly(hourlyForecast);
 			})
 			.catch(function (request) {
-				Log.error("Could not load data ... ", request);
+				Log.error("[weatherprovider.openmeteo] Could not load data ... ", request);
 			})
 			.finally(() => this.updateAvailable());
 	},
@@ -217,7 +217,7 @@ WeatherProvider.register("openmeteo", {
 		this.config.maxEntries = Math.max(1, Math.min(this.config.maxEntries, maxEntriesLimit));
 
 		if (!this.config.type) {
-			Log.error("type not configured and could not resolve it");
+			Log.error("[weatherprovider.openmeteo] type not configured and could not resolve it");
 		}
 
 		this.fetchLocation();
@@ -280,13 +280,24 @@ WeatherProvider.register("openmeteo", {
 		return `${this.config.apiBase}/forecast?${this.getQueryParameters()}`;
 	},
 
+	// fix daylight-saving-time differences
+	checkDST (dt) {
+		const uxdt = moment.unix(dt);
+		const nowDST = moment().isDST();
+		if (nowDST === moment(uxdt).isDST()) {
+			return uxdt;
+		} else {
+			return uxdt.add(nowDST ? +1 : -1, "hour");
+		}
+	},
+
 	// Transpose hourly and daily data matrices
 	transposeDataMatrix (data) {
 		return data.time.map((_, index) => Object.keys(data).reduce((row, key) => {
 			return {
 				...row,
-				// Parse time values as momentjs instances
-				[key]: ["time", "sunrise", "sunset"].includes(key) ? moment.unix(data[key][index]) : data[key][index]
+				// Parse time values as moment.js instances
+				[key]: ["time", "sunrise", "sunset"].includes(key) ? this.checkDST(data[key][index]) : data[key][index]
 			};
 		}, {}));
 	},
@@ -340,7 +351,7 @@ WeatherProvider.register("openmeteo", {
 				this.fetchedLocationName = `${data.city}, ${data.principalSubdivisionCode}`;
 			})
 			.catch((request) => {
-				Log.error("Could not load data ... ", request);
+				Log.error("[weatherprovider.openmeteo] Could not load data ... ", request);
 			});
 	},
 

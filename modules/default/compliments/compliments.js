@@ -21,9 +21,8 @@ Module.register("compliments", {
 		random: true,
 		specialDayUnique: false
 	},
-	urlSuffix: "",
 	compliments_new: null,
-	refreshMinimumDelay: 15 * 60 * 60 * 1000, // 15 minutes
+	refreshMinimumDelay: 15 * 60 * 1000, // 15 minutes
 	lastIndexUsed: -1,
 	// Set currentweather from module
 	currentWeatherType: "",
@@ -53,12 +52,12 @@ Module.register("compliments", {
 							this.compliments_new = JSON.parse(response);
 						}
 						else {
-							Log.error(`${this.name} remoteFile refresh failed`);
+							Log.error(`[compliments] ${this.name} remoteFile refresh failed`);
 						}
 					},
 					this.config.remoteFileRefreshInterval);
 				} else {
-					Log.error(`${this.name} remoteFileRefreshInterval less than minimum`);
+					Log.error(`[compliments] ${this.name} remoteFileRefreshInterval less than minimum`);
 				}
 			}
 		}
@@ -81,7 +80,7 @@ Module.register("compliments", {
 		minute_sync_delay);
 	},
 
-	// check to see if this entry could be a cron entry wich contains spaces
+	// check to see if this entry could be a cron entry which contains spaces
 	isCronEntry (entry) {
 		return entry.includes(" ");
 	},
@@ -183,7 +182,7 @@ Module.register("compliments", {
 						// if so, use its notice entries
 						Array.prototype.push.apply(date_compliments, this.config.compliments[entry]);
 					}
-				} else Log.error(`compliments cron syntax invalid=${JSON.stringify(entry)}`);
+				} else Log.error(`[compliments] cron syntax invalid=${JSON.stringify(entry)}`);
 			} else if (new RegExp(entry).test(date)) {
 				Array.prototype.push.apply(date_compliments, this.config.compliments[entry]);
 			}
@@ -205,22 +204,35 @@ Module.register("compliments", {
 
 	/**
 	 * Retrieve a file from the local filesystem
-	 * @returns {Promise} Resolved when the file is loaded
+	 * @returns {Promise<string|null>} Resolved with file content or null on error
 	 */
 	async loadComplimentFile () {
-		const isRemote = this.config.remoteFile.indexOf("http://") === 0 || this.config.remoteFile.indexOf("https://") === 0,
-			url = isRemote ? this.config.remoteFile : this.file(this.config.remoteFile);
-		// because we may be fetching the same url,
-		// we need to force the server to not give us the cached result
-		// create an extra property (ignored by the server handler) just so the url string is different
-		// that will never be the same, using the ms value of date
-		if (isRemote && this.config.remoteFileRefreshInterval !== 0) this.urlSuffix = `?dummy=${Date.now()}`;
-		//
+		const { remoteFile, remoteFileRefreshInterval } = this.config;
+		const isRemote = remoteFile.startsWith("http://") || remoteFile.startsWith("https://");
+		let url = isRemote ? remoteFile : this.file(remoteFile);
+
 		try {
-			const response = await fetch(url + this.urlSuffix);
+			// Validate URL
+			const urlObj = new URL(url);
+			// Add cache-busting parameter to remote URLs to prevent cached responses
+			if (isRemote && remoteFileRefreshInterval !== 0) {
+				urlObj.searchParams.set("dummy", Date.now());
+			}
+			url = urlObj.toString();
+		} catch {
+			Log.warn(`[compliments] Invalid URL: ${url}`);
+		}
+
+		try {
+			const response = await fetch(url);
+			if (!response.ok) {
+				Log.error(`[compliments] HTTP error: ${response.status} ${response.statusText}`);
+				return null;
+			}
 			return await response.text();
 		} catch (error) {
-			Log.info(`${this.name} fetch failed error=`, error);
+			Log.info("[compliments] fetch failed:", error.message);
+			return null;
 		}
 	},
 

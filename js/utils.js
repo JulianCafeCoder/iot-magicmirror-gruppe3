@@ -1,10 +1,7 @@
-const path = require("node:path");
-
-const rootPath = path.resolve(`${__dirname}/../`);
-const Log = require(`${rootPath}/js/logger.js`);
 const os = require("node:os");
 const fs = require("node:fs");
 const si = require("systeminformation");
+const Log = require("logger");
 
 const modulePositions = []; // will get list from index.html
 const regionRegEx = /"region ([^"]*)/i;
@@ -37,7 +34,7 @@ module.exports = {
 			].join("\n");
 			Log.info(systemDataString);
 
-			// Return is currently only for jest
+			// Return is currently only for tests
 			return systemDataString;
 		} catch (error) {
 			Log.error(error);
@@ -68,8 +65,10 @@ module.exports = {
 				if (results && results.length > 0) {
 					// get the position parts and replace space with underscore
 					const positionName = results[1].replace(" ", "_");
-					// add it to the list
-					modulePositions.push(positionName);
+					// add it to the list only if not already present (avoid duplicates)
+					if (!modulePositions.includes(positionName)) {
+						modulePositions.push(positionName);
+					}
 				}
 			});
 			try {

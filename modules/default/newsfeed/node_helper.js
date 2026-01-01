@@ -32,7 +32,7 @@ module.exports = NodeHelper.create({
 		try {
 			new URL(url);
 		} catch (error) {
-			Log.error("Newsfeed Error. Malformed newsfeed url: ", url, error);
+			Log.error("Error: Malformed newsfeed url: ", url, error);
 			this.sendSocketNotification("NEWSFEED_ERROR", { error_type: "MODULE_ERROR_MALFORMED_URL" });
 			return;
 		}
@@ -47,7 +47,7 @@ module.exports = NodeHelper.create({
 			});
 
 			fetcher.onError((fetcher, error) => {
-				Log.error("Newsfeed Error. Could not fetch newsfeed: ", url, error);
+				Log.error("Error: Could not fetch newsfeed: ", url, error);
 				let error_type = NodeHelper.checkFetchError(error);
 				this.sendSocketNotification("NEWSFEED_ERROR", {
 					error_type

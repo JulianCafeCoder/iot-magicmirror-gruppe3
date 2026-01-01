@@ -1,5 +1,5 @@
-// Alias modules mentioned in package.js under _moduleAliases.
-require("module-alias/register");
+// Load lightweight internal alias resolver
+require("./alias-resolver");
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -15,7 +15,7 @@ const Utils = require(`${__dirname}/utils`);
 const defaultModules = require(`${global.root_path}/modules/default/defaultmodules`);
 // used to control fetch timeout for node_helpers
 const { setGlobalDispatcher, Agent } = require("undici");
-const { getEnvVarsAsObj } = require("#server_functions");
+const { getEnvVarsAsObj, getConfigFilePath } = require("#server_functions");
 // common timeout value, provide environment override in case
 const fetch_timeout = process.env.mmFetchTimeout !== undefined ? process.env.mmFetchTimeout : 30000;
 
@@ -65,14 +65,14 @@ function App () {
 	async function loadConfig () {
 		Log.log("Loading config ...");
 		const defaults = require(`${__dirname}/defaults`);
-		if (process.env.JEST_WORKER_ID !== undefined) {
-			// if we are running with jest
+		if (global.mmTestMode) {
+			// if we are running in test mode
 			defaults.address = "0.0.0.0";
 		}
 
 		// For this check proposed to TestSuite
 		// https://forum.magicmirror.builders/topic/1456/test-suite-for-magicmirror/8
-		const configFilename = path.resolve(global.configuration_file || `${global.root_path}/config/config.js`);
+		const configFilename = getConfigFilePath();
 		let templateFile = `${configFilename}.template`;
 
 		// check if templateFile exists
@@ -158,7 +158,7 @@ function App () {
 		const deprecatedOptions = deprecated.configs;
 		const usedDeprecated = deprecatedOptions.filter((option) => userConfig.hasOwnProperty(option));
 		if (usedDeprecated.length > 0) {
-			Log.warn(`WARNING! Your config is using deprecated option(s): ${usedDeprecated.join(", ")}. Check README and CHANGELOG for more up-to-date ways of getting the same functionality.`);
+			Log.warn(`WARNING! Your config is using deprecated option(s): ${usedDeprecated.join(", ")}. Check README and Documentation for more up-to-date ways of getting the same functionality.`);
 		}
 
 		// check for deprecated module options
@@ -167,7 +167,7 @@ function App () {
 				const deprecatedModuleOptions = deprecated[element.module];
 				const usedDeprecatedModuleOptions = deprecatedModuleOptions.filter((option) => element.config.hasOwnProperty(option));
 				if (usedDeprecatedModuleOptions.length > 0) {
-					Log.warn(`WARNING! Your config for module ${element.module} is using deprecated option(s): ${usedDeprecatedModuleOptions.join(", ")}. Check README and CHANGELOG for more up-to-date ways of getting the same functionality.`);
+					Log.warn(`WARNING! Your config for module ${element.module} is using deprecated option(s): ${usedDeprecatedModuleOptions.join(", ")}. Check README and Documentation for more up-to-date ways of getting the same functionality.`);
 				}
 			}
 		}
@@ -185,10 +185,10 @@ function App () {
 
 		if (defaultModules.includes(moduleName)) {
 			const defaultModuleFolder = path.resolve(`${global.root_path}/modules/default/`, module);
-			if (process.env.JEST_WORKER_ID === undefined) {
+			if (!global.mmTestMode) {
 				moduleFolder = defaultModuleFolder;
 			} else {
-				// running in Jest, allow defaultModules placed under moduleDir for testing
+				// running in test mode, allow defaultModules placed under moduleDir for testing
 				if (env.modulesDir === "modules" || env.modulesDir === "tests/mocks") {
 					moduleFolder = defaultModuleFolder;
 				}

@@ -27,7 +27,7 @@
  * 	- Pressures are in Pascals (Pa)
  * 	- Distances are in metres (m)
  * 	- Probabilities and humidity are given as percentages (%)
- * 	- Precipitation is measured in millimetres (mm) with rates per hour (mm/h)
+ * 	- Precipitation is measured in millimeters (mm) with rates per hour (mm/h)
  *
  * See the PDFs linked above for more information on the data their corresponding units.
  */
@@ -86,8 +86,7 @@ WeatherProvider.register("ukmetofficedatahub", {
 					 * Did not receive usable new data.
 					 * Maybe this needs a better check?
 					 */
-					Log.error("Possibly bad current/hourly data?");
-					Log.error(data);
+					Log.error("[weatherprovider.ukmetofficedatahub] Possibly bad current/hourly data?", data);
 					return;
 				}
 
@@ -100,7 +99,7 @@ WeatherProvider.register("ukmetofficedatahub", {
 			})
 
 			// Catch any error(s)
-			.catch((error) => Log.error(`Could not load data: ${error.message}`))
+			.catch((error) => Log.error(`[weatherprovider.ukmetofficedatahub] Could not load data: ${error.message}`))
 
 			// Let the module know there is data available
 			.finally(() => this.updateAvailable());
@@ -162,8 +161,7 @@ WeatherProvider.register("ukmetofficedatahub", {
 					 * Did not receive usable new data.
 					 * Maybe this needs a better check?
 					 */
-					Log.error("Possibly bad forecast data?");
-					Log.error(data);
+					Log.error("[weatherprovider.ukmetofficedatahub] Possibly bad forecast data?", data);
 					return;
 				}
 
@@ -176,7 +174,7 @@ WeatherProvider.register("ukmetofficedatahub", {
 			})
 
 			// Catch any error(s)
-			.catch((error) => Log.error(`Could not load data: ${error.message}`))
+			.catch((error) => Log.error(`[weatherprovider.ukmetofficedatahub] Could not load data: ${error.message}`))
 
 			// Let the module know there is new data available
 			.finally(() => this.updateAvailable());

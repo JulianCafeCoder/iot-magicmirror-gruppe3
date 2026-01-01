@@ -1,4 +1,3 @@
-const { expect } = require("playwright/test");
 const { cors, getUserAgent } = require("#server_functions");
 
 describe("server_functions tests", () => {
@@ -8,27 +7,32 @@ describe("server_functions tests", () => {
 		let fetchResponseHeadersText;
 		let corsResponse;
 		let request;
-
 		let fetchMock;
 
 		beforeEach(() => {
-			fetchResponseHeadersGet = jest.fn(() => {});
-			fetchResponseHeadersText = jest.fn(() => {});
+			fetchResponseHeadersGet = vi.fn(() => {});
+			fetchResponseHeadersText = vi.fn(() => {});
 			fetchResponse = {
 				headers: {
 					get: fetchResponseHeadersGet
 				},
-				text: fetchResponseHeadersText
+				text: fetchResponseHeadersText,
+				ok: true
 			};
 
-			fetch = jest.fn();
+			fetch = vi.fn();
 			fetch.mockImplementation(() => fetchResponse);
 
 			fetchMock = fetch;
 
 			corsResponse = {
-				set: jest.fn(() => {}),
-				send: jest.fn(() => {})
+				set: vi.fn(() => {}),
+				send: vi.fn(() => {}),
+				status: vi.fn(function (code) {
+					this.statusCode = code;
+					return this;
+				}),
+				json: vi.fn(() => {})
 			};
 
 			request = {
@@ -77,7 +81,7 @@ describe("server_functions tests", () => {
 			fetchResponseHeadersText.mockImplementation(() => responseData);
 
 			let sentData;
-			corsResponse.send = jest.fn((input) => {
+			corsResponse.send = vi.fn((input) => {
 				sentData = input;
 			});
 
@@ -93,15 +97,11 @@ describe("server_functions tests", () => {
 				throw error;
 			});
 
-			let sentData;
-			corsResponse.send = jest.fn((input) => {
-				sentData = input;
-			});
-
 			await cors(request, corsResponse);
 
 			expect(fetchResponseHeadersText.mock.calls).toHaveLength(1);
-			expect(sentData).toBe(error);
+			expect(corsResponse.status).toHaveBeenCalledWith(500);
+			expect(corsResponse.json).toHaveBeenCalledWith({ error: error.message });
 		});
 
 		it("Fetches with user agent by default", async () => {
@@ -145,17 +145,17 @@ describe("server_functions tests", () => {
 		});
 
 		it("Gets User-Agent from configuration", async () => {
-			config = {};
+			global.config = {};
 			let userAgent;
 
 			userAgent = getUserAgent();
 			expect(userAgent).toContain("Mozilla/5.0 (Node.js ");
 
-			config.userAgent = "Mozilla/5.0 (Foo)";
+			global.config.userAgent = "Mozilla/5.0 (Foo)";
 			userAgent = getUserAgent();
 			expect(userAgent).toBe("Mozilla/5.0 (Foo)");
 
-			config.userAgent = () => "Mozilla/5.0 (Bar)";
+			global.config.userAgent = () => "Mozilla/5.0 (Bar)";
 			userAgent = getUserAgent();
 			expect(userAgent).toBe("Mozilla/5.0 (Bar)");
 		});

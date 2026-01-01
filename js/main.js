@@ -1,4 +1,4 @@
-/* global Loader, defaults, Translator, addAnimateCSS, removeAnimateCSS, AnimateCSSIn, AnimateCSSOut, modulePositions */
+/* global Loader, defaults, Translator, addAnimateCSS, removeAnimateCSS, AnimateCSSIn, AnimateCSSOut, modulePositions, io */
 
 const MM = (function () {
 	let modules = [];
@@ -268,7 +268,6 @@ const MM = (function () {
 	const hideModule = function (module, speed, callback, options = {}) {
 		// set lockString if set in options.
 		if (options.lockString) {
-			// Log.log("Has lockstring: " + options.lockString);
 			if (module.lockStrings.indexOf(options.lockString) === -1) {
 				module.lockStrings.push(options.lockString);
 			}
@@ -605,6 +604,18 @@ const MM = (function () {
 			sendNotification("ALL_MODULES_STARTED");
 
 			createDomObjects();
+
+			// Setup global socket listener for RELOAD event (watch mode)
+			if (typeof io !== "undefined") {
+				const socket = io("/", {
+					path: `${config.basePath || "/"}socket.io`
+				});
+
+				socket.on("RELOAD", () => {
+					Log.warn("Reload notification received from server");
+					window.location.reload(true);
+				});
+			}
 
 			if (config.reloadAfterServerRestart) {
 				setInterval(async () => {

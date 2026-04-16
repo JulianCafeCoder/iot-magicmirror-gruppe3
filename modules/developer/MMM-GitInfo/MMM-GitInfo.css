@@ -1,0 +1,171 @@
+/* ==============================
+   MMM-GitInfo – Styles
+   ============================== */
+
+.module.MMM-GitInfo .gitinfo-wrap {
+  width: 480px;
+  font-size: 12px;
+}
+
+/* ── Loading / Error ──────────────────────────────────────────────── */
+
+.gitinfo-loading,
+.gitinfo-error {
+  padding: 20px 0;
+  color: rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.gitinfo-error { color: #ff6b6b; }
+
+/* ── Header: Branch + Total ──────────────────────────────────────── */
+
+.gitinfo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 6px;
+}
+
+.gitinfo-branch {
+  font-size: 14px;
+  font-weight: 700;
+  color: #4caf82;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gitinfo-total {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ── Stats Bar ───────────────────────────────────────────────────── */
+
+.gitinfo-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 10px;
+}
+
+.gitinfo-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.gitinfo-stat .fa-fire { color: #f0a500; }
+.gitinfo-stat .fa-users { color: #6c8ebf; }
+
+.gitinfo-sep {
+  opacity: 0.3;
+}
+
+/* ── Commit-Liste ────────────────────────────────────────────────── */
+
+.gitinfo-commits {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-left: 2px solid rgba(76, 175, 130, 0.25);
+  margin-left: 5px;
+  padding-left: 0;
+}
+
+.gitinfo-commit {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background 0.15s;
+  animation: gitinfo-slide-in 0.3s ease both;
+  position: relative;
+}
+
+@keyframes gitinfo-slide-in {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Timeline-Punkt */
+.gitinfo-commit-dot {
+  position: absolute;
+  left: -6px;
+  top: 12px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4caf82;
+  border: 2px solid #020818;
+  flex-shrink: 0;
+}
+
+.gitinfo-commit:first-child .gitinfo-commit-dot {
+  background: #f0a500;   /* neuester Commit orange hervorgehoben */
+  box-shadow: 0 0 6px rgba(240, 165, 0, 0.5);
+}
+
+.gitinfo-commit-body {
+  flex: 1;
+  min-width: 0;
+  padding-left: 8px;
+}
+
+.gitinfo-commit-subject {
+  font-size: 12px;
+  color: var(--color-text-bright, #fff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+
+.gitinfo-commit:first-child .gitinfo-commit-subject {
+  color: #f0a500;
+  font-weight: 600;
+}
+
+.gitinfo-commit-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+}
+
+.gitinfo-commit-hash {
+  font-family: "Courier New", monospace;
+  background: rgba(255,255,255,0.07);
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: #6c8ebf;
+}
+
+.gitinfo-commit-when {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────── */
+
+.gitinfo-footer {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  font-size: 10px;
+  color: rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}

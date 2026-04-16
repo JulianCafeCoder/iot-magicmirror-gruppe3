@@ -1,0 +1,130 @@
+/* =====================================================================
+   MMM-Aurora — minimale Aurora Borealis, Fullscreen
+   ===================================================================== */
+
+/* Die MagicMirror-Region fullscreen_below füllt den ganzen Bildschirm.
+   Wir übernehmen diese Fläche vollständig. */
+.region.fullscreen.below .module.MMM-Aurora,
+.module.MMM-Aurora {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Hintergrund: Nachthimmel ─────────────────────────────────────── */
+
+.mmaurora-scene {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 160% 80% at 50% 110%,
+    #011226 0%,
+    #000a18 40%,
+    #00060f 100%
+  );
+  overflow: hidden;
+}
+
+/* ── Gemeinsame Band-Basis ────────────────────────────────────────── */
+
+.mmaurora-band-1,
+.mmaurora-band-2,
+.mmaurora-band-3 {
+  position: absolute;
+  left: -15%;
+  width: 130%;
+  border-radius: 50%;
+  /* Starker Blur erzeugt die weiche Leuchtkante der Aurora */
+  filter: blur(52px);
+  will-change: transform, opacity;
+}
+
+/* ── Band 1 — Hauptband, tiefes Grün ─────────────────────────────── */
+
+.mmaurora-band-1 {
+  top: 12%;
+  height: 28%;
+  background: linear-gradient(
+    180deg,
+    transparent             0%,
+    rgba(0, 180, 100, 0.55) 40%,
+    rgba(0, 130,  70, 0.25) 75%,
+    transparent            100%
+  );
+  animation: aurora-drift-1 14s ease-in-out infinite;
+}
+
+/* ── Band 2 — höher, blau-türkis ──────────────────────────────────── */
+
+.mmaurora-band-2 {
+  top: 5%;
+  height: 22%;
+  background: linear-gradient(
+    180deg,
+    transparent             0%,
+    rgba(0, 200, 180, 0.35) 45%,
+    rgba(0, 150, 140, 0.15) 80%,
+    transparent            100%
+  );
+  animation: aurora-drift-2 19s ease-in-out infinite;
+}
+
+/* ── Band 3 — helleres Highlight, leichter Versatz nach rechts ────── */
+
+.mmaurora-band-3 {
+  top: 18%;
+  left: 10%;
+  width: 90%;
+  height: 18%;
+  background: linear-gradient(
+    180deg,
+    transparent              0%,
+    rgba(80, 255, 160, 0.22) 40%,
+    transparent             100%
+  );
+  animation: aurora-drift-3 23s ease-in-out infinite;
+}
+
+/* ── Horizont-Schimmer ────────────────────────────────────────────── */
+
+.mmaurora-horizon {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: linear-gradient(
+    180deg,
+    transparent            0%,
+    rgba(0, 60, 40, 0.18) 60%,
+    rgba(0, 30, 20, 0.30) 100%
+  );
+  /* kein Filter, kein Blur — subtiler Gradient reicht */
+}
+
+/* ── Animationen ──────────────────────────────────────────────────── */
+
+/* Band 1: langsam auf und ab, leichte Breitenänderung */
+@keyframes aurora-drift-1 {
+  0%,  100% { transform: translateY(0px)    scaleX(1.00); opacity: 0.85; }
+  25%        { transform: translateY(-18px)  scaleX(1.04); opacity: 1.00; }
+  55%        { transform: translateY(12px)   scaleX(0.97); opacity: 0.65; }
+  75%        { transform: translateY(-8px)   scaleX(1.02); opacity: 0.80; }
+}
+
+/* Band 2: gegenläufig, etwas langsamer */
+@keyframes aurora-drift-2 {
+  0%,  100% { transform: translateY(0px)   scaleX(1.00); opacity: 0.70; }
+  30%        { transform: translateY(14px)  scaleX(0.96); opacity: 0.50; }
+  65%        { transform: translateY(-20px) scaleX(1.06); opacity: 0.85; }
+}
+
+/* Band 3: subtilstes, sehr langsame Pulsation */
+@keyframes aurora-drift-3 {
+  0%,  100% { transform: translateY(0px)  scaleX(1.00); opacity: 0.60; }
+  40%        { transform: translateY(-10px) scaleX(1.03); opacity: 0.90; }
+  70%        { transform: translateY(8px)  scaleX(0.99); opacity: 0.45; }
+}

@@ -1,0 +1,13 @@
+{
+  "todos": [
+    { "id": 1, "title": "Einkaufen: Milch, Brot, Käse", "done": false, "category": "Haushalt" },
+    { "id": 2, "title": "Zahnarzt Termin vereinbaren", "done": false, "category": "Gesundheit" },
+    { "id": 3, "title": "Auto zur Inspektion bringen", "done": false, "category": "Auto" },
+    { "id": 4, "title": "Steuererklärung abgeben", "done": false, "category": "Finanzen" },
+    { "id": 5, "title": "Geburtstagskarte für Mama schreiben", "done": false, "category": "Familie" },
+    { "id": 6, "title": "Sport: 3x diese Woche", "done": false, "category": "Gesundheit" },
+    { "id": 7, "title": "Wohnung saugen", "done": true, "category": "Haushalt" },
+    { "id": 8, "title": "Rechnung bezahlen", "done": true, "category": "Finanzen" },
+    { "id": 9, "title": "Paket bei Nachbarn abholen", "done": true, "category": "Sonstiges" }
+  ]
+}

@@ -28,15 +28,17 @@ Module.register("MMM-GitInfo", {
   // ── Socket ────────────────────────────────────────────────────────────────
 
   socketNotificationReceived(notification, payload) {
-    Log.info(`${this.name}: socketNotificationReceived – ${notification}`);
     if (notification === "GIT_DATA") {
-      Log.info(`${this.name}: GIT_DATA erhalten – Branch: ${payload.branch}, Commits: ${payload.totalCommits}`);
       this.error = null;
       this.data  = payload;
       this.updateDom(400);
+      // Debug-Ping zurück an node_helper – erscheint im Backend-Terminal
+      this.sendSocketNotification("GIT_DATA_ACK", {
+        branch: payload.branch,
+        commits: payload.commits ? payload.commits.length : -1,
+      });
     }
     if (notification === "GIT_ERROR") {
-      Log.error(`${this.name}: GIT_ERROR – ${payload.message}`);
       this.error = payload.message;
       this.updateDom(400);
     }
@@ -53,7 +55,6 @@ Module.register("MMM-GitInfo", {
   // ── DOM ───────────────────────────────────────────────────────────────────
 
   getDom() {
-    Log.info(`${this.name}: getDom – data=${!!this.data}, error=${this.error}`);
     const wrap = document.createElement("div");
     wrap.className = "gitinfo-wrap";
 

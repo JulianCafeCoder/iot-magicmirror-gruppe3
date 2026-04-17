@@ -16,6 +16,9 @@ module.exports = NodeHelper.create({
       Log.info(`${this.name}: GIT_FETCH empfangen – starte Abfrage für ${this.repoPath}`);
       this._fetchAll();
     }
+    if (notification === "GIT_DATA_ACK") {
+      Log.info(`${this.name}: ✔ Frontend hat GIT_DATA empfangen – Branch: ${payload.branch}, Commits im Array: ${payload.commits}`);
+    }
   },
 
   // ── Alle Git-Daten sammeln und gebündelt senden ───────────────────────────

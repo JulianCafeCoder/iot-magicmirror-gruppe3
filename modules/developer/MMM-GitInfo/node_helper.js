@@ -5,15 +5,15 @@ const { execFile } = require("child_process");
 module.exports = NodeHelper.create({
 
   start() {
-    // global.root_path ist in Node.js-Kontext verfügbar (gesetzt von MagicMirror app.js)
     this.repoPath = global.root_path;
-    Log.info(`${this.name}: node_helper ready – repo: ${this.repoPath}`);
+    Log.info(`${this.name}: node_helper gestartet`);
+    Log.info(`${this.name}: repo path = ${this.repoPath}`);
   },
 
   socketNotificationReceived(notification, payload) {
     if (notification === "GIT_FETCH") {
-      // Falls per Config ein abweichender Pfad angegeben wurde, diesen nutzen
       if (payload.repoPath) this.repoPath = payload.repoPath;
+      Log.info(`${this.name}: GIT_FETCH empfangen – starte Abfrage für ${this.repoPath}`);
       this._fetchAll();
     }
   },
@@ -21,6 +21,7 @@ module.exports = NodeHelper.create({
   // ── Alle Git-Daten sammeln und gebündelt senden ───────────────────────────
 
   async _fetchAll() {
+    Log.info(`${this.name}: führe Git-Befehle aus in ${this.repoPath}`);
     try {
       const [commits, branch, totalCommits, contributors, weeklyCount] =
         await Promise.all([
@@ -31,6 +32,7 @@ module.exports = NodeHelper.create({
           this._gitWeeklyCount(),
         ]);
 
+      Log.info(`${this.name}: Git-Daten erfolgreich geladen – Branch: ${branch}, Commits: ${totalCommits}`);
       this.sendSocketNotification("GIT_DATA", {
         commits,
         branch,

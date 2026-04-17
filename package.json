@@ -60,6 +60,8 @@
 		"server": "node ./serveronly",
 		"server:watch": "node ./serveronly/watcher.js",
 		"start": "node --run start:wayland",
+		"start:select": "node scripts/start-with-profile.js",
+		"start:select:x11": "node scripts/start-with-profile.js --x11",
 		"start:dev": "node --run start:wayland -- dev",
 		"start:wayland": "WAYLAND_DISPLAY=\"${WAYLAND_DISPLAY:=wayland-1}\" ./node_modules/.bin/electron js/electron.js --ozone-platform=wayland",
 		"start:wayland:dev": "node --run start:wayland -- dev",

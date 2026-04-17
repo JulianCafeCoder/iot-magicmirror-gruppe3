@@ -31,7 +31,7 @@ Module.register("MMM-GitInfo", {
     if (notification === "GIT_DATA") {
       this.error = null;
       this.data  = payload;
-      this.updateDom(400);
+      this.updateDom(0);
       // Debug-Ping zurück an node_helper – erscheint im Backend-Terminal
       this.sendSocketNotification("GIT_DATA_ACK", {
         branch: payload.branch,
@@ -40,7 +40,7 @@ Module.register("MMM-GitInfo", {
     }
     if (notification === "GIT_ERROR") {
       this.error = payload.message;
-      this.updateDom(400);
+      this.updateDom(0);
     }
   },
 

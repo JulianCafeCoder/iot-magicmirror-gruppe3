@@ -234,7 +234,7 @@ const pageModules = activePages.flatMap((page) =>
 
 let config = {
   address: "localhost",
-  port: 8080,
+  port: 8081,
   basePath: "/",
   ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1"],
 

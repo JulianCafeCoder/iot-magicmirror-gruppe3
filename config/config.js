@@ -283,10 +283,21 @@ let config = {
     {
       module: "MMM-KeyBindings",
       config: {
-        eventsToSend: {
-          KEY_ArrowRight: { notification: "PAGE_INCREMENT" },
-          KEY_ArrowLeft:  { notification: "PAGE_DECREMENT" }
-        }
+        enableKeyboard: true,
+        actions: [
+          {
+            key: "ArrowRight",
+            state: "KEY_PRESSED",
+            mode: "DEFAULT",
+            notification: "PAGE_INCREMENT"
+          },
+          {
+            key: "ArrowLeft",
+            state: "KEY_PRESSED",
+            mode: "DEFAULT",
+            notification: "PAGE_DECREMENT"
+          }
+        ]
       }
     },
 

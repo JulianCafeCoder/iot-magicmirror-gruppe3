@@ -55,24 +55,14 @@ Module.register("MMM-GitInfo", {
   // ── DOM ───────────────────────────────────────────────────────────────────
 
   getDom() {
+    // ── Debug: minimal element, kein CSS, direkt sichtbar ─────────────────
     const wrap = document.createElement("div");
-    wrap.className = "gitinfo-wrap";
-
-    if (this.error) {
-      wrap.innerHTML = `<div class="gitinfo-error"><i class="fas fa-circle-exclamation"></i> ${this.error}</div>`;
-      return wrap;
-    }
-
+    wrap.style.cssText = "color:white;font-size:18px;padding:12px;background:rgba(255,0,0,0.3);";
     if (!this.data) {
-      wrap.innerHTML = `<div class="gitinfo-loading"><i class="fas fa-spinner fa-spin"></i> Lade Git-Daten…</div>`;
+      wrap.textContent = "DEBUG: Warte auf Git-Daten...";
       return wrap;
     }
-
-    wrap.appendChild(this._buildHeader());
-    wrap.appendChild(this._buildStats());
-    wrap.appendChild(this._buildCommitList());
-    wrap.appendChild(this._buildFooter());
-
+    wrap.textContent = `DEBUG OK: ${this.data.branch} | ${this.data.commits.length} Commits`;
     return wrap;
   },
 

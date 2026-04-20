@@ -206,12 +206,9 @@ const PAGES = {
       pageClass: "dev-page2",
       modules: [
         {
-          module: "developer/MMM-DevPage",
-          position: "middle_center",
-          header: "Seite 2",
-          config: {
-            text: "Diese Seite ist noch leer."
-          }
+          module: "developer/MMM-LightSwitches",
+          position: "top_left",
+          header: "Lichtsteuerung"
         }
       ]
     },
@@ -284,6 +281,8 @@ let config = {
       module: "MMM-KeyBindings",
       config: {
         enableKeyboard: true,
+        // Ziffern 1–8 müssen explizit zur Abhörliste hinzugefügt werden
+        handleKeys: ["1", "2", "3", "4", "5", "6", "7", "8"],
         actions: [
           {
             key: "ArrowRight",
@@ -297,6 +296,7 @@ let config = {
             mode: "DEFAULT",
             notification: "PAGE_DECREMENT"
           }
+          // Tasten 1–8 werden direkt von MMM-LightSwitches via KEYPRESS-Notification verarbeitet
         ]
       }
     },

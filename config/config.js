@@ -201,7 +201,7 @@ const PAGES = {
           header: "Git Repository"
         }
       ]
-    }
+    },
     {
       pageClass: "dev-page2",
       modules: [
@@ -279,12 +279,23 @@ let config = {
     { module: "alert" },
     { module: "updatenotification", position: "top_bar" },
 
+    // ── Tastatur-Navigation (Pfeiltasten → MMM-pages) ─────────────────────
+    {
+      module: "MMM-KeyBindings",
+      config: {
+        eventsToSend: {
+          KEY_ArrowRight: { notification: "PAGE_INCREMENT" },
+          KEY_ArrowLeft:  { notification: "PAGE_DECREMENT" }
+        }
+      }
+    },
+
     // ── Seiten-Steuerung ──────────────────────────────────────────────────
     {
       module: "MMM-pages",
       config: {
         modules: pagesMatrix,
-        fixed: ["alert", "updatenotification"],
+        fixed: ["alert", "updatenotification", "MMM-KeyBindings"],
         timings: {
           default: PAGE_TIMING_MS,
           1: 60 * 1000   // Aurora-Seite (Index 1) läuft 60 Sekunden

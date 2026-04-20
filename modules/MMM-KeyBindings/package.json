@@ -1,0 +1,55 @@
+{
+  "name": "mmm-keybindings",
+  "version": "2.0.2",
+  "description": "Module to provide keyboard or Bluetooth Remote Control key bindings to control various aspects of the MagicMirror² through socket notifications.",
+  "keywords": [
+    "MagicMirror",
+    "Fire Stick",
+    "remote control",
+    "Keyboard"
+  ],
+  "homepage": "https://github.com/shbatm/MMM-KeyBindings#readme",
+  "bugs": {
+    "url": "https://github.com/shbatm/MMM-KeyBindings/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shbatm/MMM-KeyBindings.git"
+  },
+  "license": "MIT",
+  "author": "shbatm",
+  "main": "MMM-KeyBindings.js",
+  "type": "commonjs",
+  "scripts": {
+    "demo": "cd ../../ && MM_CONFIG_FILE=modules/MMM-KeyBindings/demo.config.js node --run start:dev",
+    "lint": "eslint && prettier . --check",
+    "lint:fix": "eslint --fix && prettier . --write",
+    "prepare": "simple-git-hooks || true",
+    "release": "commit-and-tag-version --config ./changelog.config.js",
+    "test": "node --run lint && node --run test:spelling",
+    "test:spelling": "cspell ."
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*": [
+      "eslint --fix",
+      "prettier --write --ignore-unknown"
+    ]
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@eslint/json": "^1.1.0",
+    "@eslint/markdown": "^7.5.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "commit-and-tag-version": "^12.6.1",
+    "cspell": "^9.7.0",
+    "eslint": "^10.0.3",
+    "eslint-plugin-import-x": "^4.16.2",
+    "globals": "^17.4.0",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.1",
+    "simple-git-hooks": "^2.13.1"
+  }
+}

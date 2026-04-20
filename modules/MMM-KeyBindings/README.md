@@ -1,0 +1,228 @@
+# MMM-KeyBindings
+
+**MMM-KeyBindings** is a module for [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror/) that allows you to control your MagicMirror using a Bluetooth-connected remote (e.g. Amazon Fire Stick Remote) or a keyboard. It captures key presses and sends them as notifications for other modules to handle, allowing you to navigate and control your mirror without touching the screen.
+
+The primary features are:
+
+1. Customizable key map for Bluetooth remotes (Fire Stick and others). See: [Why Fire Stick?](https://github.com/shbatm/MMM-KeyBindings/wiki/Background-Information#WhyFire)
+2. Customizable keyboard navigation — basic navigation keys are captured by default, but this can be changed in the config.
+3. Assign keys to perform actions automatically (e.g. toggle the monitor when HOME is long-pressed, using MMM-Remote-Control).
+4. Allows a module to "take focus", so other modules ignore keypresses when a particular module is active (e.g. in a pop-up menu).
+5. Supports multiple MagicMirror instances on different screens, independently controlled.
+
+## Using the module
+
+To use this module, add the following configuration block to the modules array in the `config/config.js` file:
+
+```js
+
+    {
+      module: "MMM-KeyBindings",
+      config: {
+        // See below for configurable options
+      }
+    },
+```
+
+You can then configure other modules to handle the key presses and, if necessary, request focus so only that module will respond to the keys (e.g. for a menu). See [Handling Keys in Other Modules](https://github.com/shbatm/MMM-KeyBindings/wiki/Integration-into-Other-Modules)
+
+## Installation
+
+```bash
+cd ~/MagicMirror/modules
+git clone https://github.com/shbatm/MMM-KeyBindings
+```
+
+**That's it!** For standard keyboard usage, no `npm install` is required - the module has zero runtime dependencies.
+
+### Advanced Setup (evdev / Bluetooth Remote)
+
+For advanced control using something like the Amazon Fire TV Remote, continue with the following steps:
+
+1. Connect your device and make sure it's recognized (for example, using the Desktop bluetooth device menu). See instructions [here](https://github.com/shbatm/MMM-KeyBindings/wiki/Remote-Setup)
+2. Find the "Name" of the device using one of the two methods below:
+   1. From a terminal run `cat /proc/bus/input/devices | grep "Name"` to get the Name to use
+   2. From a terminal run `udevadm info -a -p $(udevadm info -q path -n /dev/input/event0) | grep ATTRS{name}`, assuming this is the only device connected. You may have to change `event0` to something else. Check `ls /dev/input/` to see which ones are currently connected.
+3. Edit the `99-btremote.rules` file in this module's directory to use the name you found.
+4. Run the setup script to install the udev rules:
+   ```bash
+   cd ~/MagicMirror/modules/MMM-KeyBindings
+   ./setup-udev.sh
+   ```
+5. Add your user to the `input` group to allow reading input devices:
+   ```bash
+   sudo usermod -aG input $USER
+   ```
+   Then **logout and login again** (or reboot) for the change to take effect.
+6. Configure `eventPath` in your module config (see Configuration options below).
+
+## Update
+
+Just enter the module's directory and pull the update:
+
+```bash
+cd ~/MagicMirror/modules/MMM-KeyBindings
+git pull
+```
+
+## Configuration options
+
+### (samples below)
+
+|                Option                | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| :----------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|           `enableKeyboard`           | Whether or not to capture keys from a standard keyboard. <br>_Optional_ Default: `false` - keyboard is not enabled. Set to `true` to enable a standard keyboard. Make sure no other modules are using the keyboard (e.g. MMM-OnScreenMenu). <br>**Note:** When using a Bluetooth remote with `evdev`, keep this set to `false` to avoid duplicate key events (the remote registers as both an evdev device and a keyboard).                                                                                         |
+|          `enabledKeyStates`          | Array of Key States that the module should handle. <br />_Default:_ `KEY_PRESSED` & `KEY_LONGPRESSED`                                                                                                                                                                                                                                                                                                                                                                                                               |
+|             `handleKeys`             | Array of additional keys (strings) to handle in this module above the standard set. Use `KeyboardEvent.key` names such as `ArrowLeft`, `Home`, `Enter`, `k`.                                                                                                                                                                                                                                                                                                                                                        |
+|            `disableKeys`             | Array of keys to ignore from the default set.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|               `evdev`                | Configuration options for the `evdev` daemon. <br />See below for details.<br />_Example:_<br/>`evdev: {`<br />&nbsp;&nbsp;&nbsp;&nbsp;`enabled: true,`<br />&nbsp;&nbsp;&nbsp;&nbsp;`eventPath: '/dev/input/btremote',`<br />`}`                                                                                                                                                                                                                                                                                   |
+| &nbsp;&nbsp;&nbsp;&nbsp;`.eventPath` | Path to the event input file<br /> _Default:_ `/dev/input/btremote`                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+|               `keyMap`               | Map of the remote controls' key names (from `evtest`) to translate into standard keyboard event names. See Sample Key Map below.                                                                                                                                                                                                                                                                                                                                                                                    |
+|              `actions`               | Actions this module will take on certain key presses. See "Actions" section below.<br>_Default:_ Ask [MMM-Remote-Control](https://github.com/Jopyth/MMM-Remote-Control) to toggle the screen on and off when "Home" is long-pressed.<br>`actions: [{`<br>&nbsp;&nbsp;`key: "Home",`<br>&nbsp;&nbsp;`state: "KEY_LONGPRESSED",`<br>&nbsp;&nbsp;`instance: "SERVER",`<br>&nbsp;&nbsp;`mode: "DEFAULT",`<br>&nbsp;&nbsp;`notification: "REMOTE_ACTION",`<br>&nbsp;&nbsp;`payload: { action: "MONITORTOGGLE" }`<br>`}]` |
+
+### Sample Configurations
+
+#### Standard: Using FireStick Remote Locally and a Keyboard on Remote Browser
+
+The config below uses the default [special keys](SpecialKeys) for the Fire Stick remote: Long-pressing 'Home' will toggle the screen on/off.
+
+```js
+{
+    module: 'MMM-KeyBindings',
+    config: {
+        enableKeyboard: true
+    }
+},
+```
+
+#### Basic: Use Keyboard Only with Default Keys (no remote)
+
+```js
+{
+    module: 'MMM-KeyBindings',
+    config: {
+        evdev: { enabled: false },
+        enableKeyboard: true,
+    }
+},
+```
+
+### Remote Control Key Map
+
+The following is the default key map for the Amazon Fire Stick remote. It maps keys to "Standard" keyboard key names for convenience. The incoming or outgoing names can be changed to suit your needs by adding a new copy of the keymap to the config.
+
+```javascript
+keyMap: {
+    Home: "KEY_HOMEPAGE",
+    Enter: "KEY_KPENTER",
+    ArrowLeft: "KEY_LEFT",
+    ArrowRight: "KEY_RIGHT",
+    ArrowUp: "KEY_UP",
+    ArrowDown: "KEY_DOWN",
+    Menu: "KEY_MENU",
+    MediaPlayPause: "KEY_PLAYPAUSE",
+    MediaNextTrack: "KEY_FASTFORWARD",
+    MediaPreviousTrack: "KEY_REWIND",
+    Return: "KEY_BACK"
+},
+```
+
+**If you are not using a Fire Stick Remote:** You may need to adjust the key assignments above to match your remote. See [Remote Setup](https://github.com/shbatm/MMM-KeyBindings/wiki/Remote-Setup) for how to run `evtest` and display the key names for your remote/device.
+
+**Note about changing key names:** Example – map the remote's `KEY_RIGHT` to the keyboard key `k`:
+
+1. Add the whole `keyMap` above to your config section.
+2. Change `ArrowRight: "KEY_RIGHT"` to `k: "KEY_RIGHT"`.
+3. If you also want to press `k` on a keyboard, add it to `handleKeys: ['k']` (the native handler listens for `KeyboardEvent.key` names).
+
+## Actions
+
+This module by default just receives key presses and sends them on for other modules' to handle. You can customize the actions this module will take on certain keys by providing an array of `action` objects in the config.
+
+### Action Objects
+
+|      Key       | Description                                                                                                                                                                                                             |
+| :------------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|     `key`      | The `keyName` to respond to when pressed.                                                                                                                                                                               |
+|    `state`     | The `keyState` to respond to when pressed.<br>_Optional:_ Either "KEY_PRESSED" or "KEY_LONGPRESSED", or it can be omitted to respond to both.                                                                           |
+|   `instance`   | The `instance` to respond to when pressed.<br>_Optional:_ Either "SERVER" to respond only on the main Mirror's screen or "LOCAL" to respond in any remote web browser windows, or it can be omitted to respond on both. |
+|     `mode`     | The Current `keyPressMode` to respond to.<br>_Optional:_ If you use modules that take over the key mode (like MMM-OnScreenMenu), you may only want the action to happen when it's in "DEFAULT" mode.                    |
+| `notification` | The notification to send when a matching key press is detected.                                                                                                                                                         |
+|   `payload`    | The payload to send with the notification.                                                                                                                                                                              |
+
+### Examples
+
+The following is an example Actions configuration to:
+
+1. Toggle the monitor on/off when the Bluetooth remote's Home button is long-pressed (requires MMM-Remote-Control to handle command)
+2. Change the slides in [MMM-Carousel w/ Slide Navigation](https://github.com/shbatm/MMM-Carousel) when the left or right buttons are pushed.
+3. Exit whatever mode you're in, back to DEFAULT when Return is long pressed.
+
+```javascript
+actions: [
+  {
+    key: "Home",
+    state: "KEY_LONGPRESSED",
+    instance: "SERVER",
+    mode: "DEFAULT",
+    notification: "REMOTE_ACTION",
+    payload: { action: "MONITORTOGGLE" }
+  },
+  {
+    key: "ArrowLeft",
+    state: "KEY_LONGPRESSED",
+    notification: "CAROUSEL_PREVIOUS"
+  },
+  {
+    key: "ArrowRight",
+    state: "KEY_LONGPRESSED",
+    notification: "CAROUSEL_NEXT"
+  },
+  {
+    key: "Return",
+    state: "KEY_LONGPRESSED",
+    changeMode: "DEFAULT"
+  }
+],
+```
+
+## Handling Keys in Another Module
+
+To handle key press events in your module, see this [wiki page](https://github.com/shbatm/MMM-KeyBindings/wiki/Integration-into-Other-Modules)
+
+## Development Path
+
+This module was created as a stepping stone to allow other modules to be tweaked to respond to keyboard presses--mainly for navigation purposes. Please add any requests via the Issues for this repo.
+
+**Using this module?** View a list of all modules that support MMM-KeyBindings on the wiki [here](https://github.com/shbatm/MMM-KeyBindings/wiki/Supported-Modules).
+
+## Known Issues
+
+- `KEY_LONGPRESSED` currently only comes from `evdev` on the main screen (Bluetooth remote path). Keyboard events use `KEY_PRESSED`.
+
+## Contributing
+
+If you find any problems, bugs or have questions, please [open a GitHub issue](https://github.com/shbatm/MMM-KeyBindings/issues) in this repository.
+
+Pull requests are of course also very welcome 🙂
+
+### Code of Conduct
+
+Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
+
+### Developer commands
+
+- `npm install` - Install development dependencies.
+- `node --run demo` - Start MagicMirror with the demo config to test changes.
+- `node --run lint` - Run linting and formatter checks.
+- `node --run lint:fix` - Fix linting and formatter issues.
+- `node --run test` - Run linting and formatter checks + Run spelling check.
+- `node --run test:spelling` - Run spelling check.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
+
+## Changelog
+
+All notable changes to this project will be documented in the [CHANGELOG.md](CHANGELOG.md) file.

@@ -202,6 +202,32 @@ const PAGES = {
         }
       ]
     }
+    {
+      pageClass: "dev-page2",
+      modules: [
+        {
+          module: "developer/MMM-DevPage",
+          position: "middle_center",
+          header: "Seite 2",
+          config: {
+            text: "Diese Seite ist noch leer."
+          }
+        }
+      ]
+    },
+    {
+      pageClass: "dev-page3",
+      modules: [
+        {
+          module: "developer/MMM-DevPage",
+          position: "middle_center",
+          header: "Seite 3",
+          config: {
+            text: "Diese Seite ist noch leer."
+          }
+        }
+      ]
+    }
     // Weitere Developer-Seiten hier einfügen:
     // { pageClass: "dev-performance", modules: [ ... ] },
   ]

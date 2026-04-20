@@ -19,6 +19,9 @@ module.exports = NodeHelper.create({
     if (notification === "GIT_DATA_ACK") {
       Log.info(`${this.name}: ✔ Frontend hat GIT_DATA empfangen – Branch: ${payload.branch}, Commits im Array: ${payload.commits}`);
     }
+    if (notification === "GIT_DEBUG") {
+      Log.info(`${this.name}: DOM-Debug – identifier="${payload.identifier}" | elementFound=${payload.elementFound} | children=${payload.contentChildren} | position=${payload.position}`);
+    }
   },
 
   // ── Alle Git-Daten sammeln und gebündelt senden ───────────────────────────

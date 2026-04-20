@@ -15,6 +15,17 @@ Module.register("MMM-GitInfo", {
 
   start() {
     Log.info(`${this.name}: started`);
+    // Debug: sende Modul-Identifier und DOM-Status zurück an node_helper
+    setTimeout(() => {
+      const el = document.getElementById(this.identifier);
+      this.sendSocketNotification("GIT_DEBUG", {
+        identifier: this.identifier,
+        name: this.name,
+        position: this.data.position,
+        elementFound: !!el,
+        contentChildren: el ? el.children.length : -1,
+      });
+    }, 2000);
     this._fetch();
     this._timer = setInterval(() => this._fetch(), this.config.updateInterval);
   },

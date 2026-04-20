@@ -7,25 +7,14 @@ Module.register("MMM-GitInfo", {
   },
 
   // ── State ─────────────────────────────────────────────────────────────────
-  data:    null,   // { commits, branch, totalCommits, contributors, weeklyCount, fetchedAt }
-  error:   null,
+  gitData: null,   // { commits, branch, totalCommits, contributors, weeklyCount, fetchedAt }
+  gitError: null,
   _timer:  null,
 
   // ── Lifecycle ─────────────────────────────────────────────────────────────
 
   start() {
     Log.info(`${this.name}: started`);
-    // Debug: sende Modul-Identifier und DOM-Status zurück an node_helper
-    setTimeout(() => {
-      const el = document.getElementById(this.identifier);
-      this.sendSocketNotification("GIT_DEBUG", {
-        identifier: this.identifier,
-        name: this.name,
-        position: this.data.position,
-        elementFound: !!el,
-        contentChildren: el ? el.children.length : -1,
-      });
-    }, 2000);
     this._fetch();
     this._timer = setInterval(() => this._fetch(), this.config.updateInterval);
   },
@@ -40,47 +29,72 @@ Module.register("MMM-GitInfo", {
 
   socketNotificationReceived(notification, payload) {
     if (notification === "GIT_DATA") {
-      this.error = null;
-      this.data  = payload;
-      this.updateDom(0);
-      // Debug-Ping zurück an node_helper – erscheint im Backend-Terminal
-      this.sendSocketNotification("GIT_DATA_ACK", {
-        branch: payload.branch,
-        commits: payload.commits ? payload.commits.length : -1,
-      });
+      this.gitError = null;
+      this.gitData  = payload;
+      this._render();
     }
     if (notification === "GIT_ERROR") {
-      this.error = payload.message;
-      this.updateDom(0);
+      this.gitError = payload.message;
+      this._render();
     }
   },
 
+  // ── Direkte DOM-Aktualisierung (umgeht MM.updateDom position-Check) ───────
+
+  _render() {
+    const wrapper = document.getElementById(this.identifier);
+    if (!wrapper) {
+      Log.warn(`${this.name}: wrapper element nicht gefunden (${this.identifier})`);
+      return;
+    }
+    const content = wrapper.querySelector(".module-content");
+    if (!content) {
+      Log.warn(`${this.name}: .module-content nicht gefunden`);
+      return;
+    }
+    content.innerHTML = "";
+    content.appendChild(this._buildDom());
+  },
+
   _fetch() {
-    // repoPath nur senden wenn explizit konfiguriert – sonst nutzt der
-    // node_helper automatisch global.root_path (MagicMirror-Verzeichnis)
     this.sendSocketNotification("GIT_FETCH", {
       repoPath: this.config.repoPath || null,
     });
   },
 
-  // ── DOM ───────────────────────────────────────────────────────────────────
+  // ── DOM aufbauen ──────────────────────────────────────────────────────────
 
-  getDom() {
-    // ── Debug: minimal element, kein CSS, direkt sichtbar ─────────────────
+  _buildDom() {
     const wrap = document.createElement("div");
-    wrap.style.cssText = "color:white;font-size:18px;padding:12px;background:rgba(255,0,0,0.3);";
-    if (!this.data) {
-      wrap.textContent = "DEBUG: Warte auf Git-Daten...";
+    wrap.className = "gitinfo-wrap";
+
+    if (this.gitError) {
+      wrap.innerHTML = `<div class="gitinfo-error"><i class="fas fa-circle-exclamation"></i> ${this.gitError}</div>`;
       return wrap;
     }
-    wrap.textContent = `DEBUG OK: ${this.data.branch} | ${this.data.commits.length} Commits`;
+
+    if (!this.gitData) {
+      wrap.innerHTML = `<div class="gitinfo-loading"><i class="fas fa-spinner fa-spin"></i> Lade Git-Daten…</div>`;
+      return wrap;
+    }
+
+    wrap.appendChild(this._buildHeader());
+    wrap.appendChild(this._buildStats());
+    wrap.appendChild(this._buildCommitList());
+    wrap.appendChild(this._buildFooter());
+
     return wrap;
+  },
+
+  // getDom() wird von MagicMirror initial aufgerufen (vor _render)
+  getDom() {
+    return this._buildDom();
   },
 
   // ── Branch + Commit-Zähler ────────────────────────────────────────────────
 
   _buildHeader() {
-    const { branch, totalCommits } = this.data;
+    const { branch, totalCommits } = this.gitData;
     const el = document.createElement("div");
     el.className = "gitinfo-header";
     el.innerHTML = `
@@ -96,7 +110,7 @@ Module.register("MMM-GitInfo", {
   // ── Wöchentliche Aktivität + Contributors ────────────────────────────────
 
   _buildStats() {
-    const { weeklyCount, contributors } = this.data;
+    const { weeklyCount, contributors } = this.gitData;
     const el = document.createElement("div");
     el.className = "gitinfo-stats";
 
@@ -127,7 +141,7 @@ Module.register("MMM-GitInfo", {
     const list = document.createElement("div");
     list.className = "gitinfo-commits";
 
-    const visible = this.data.commits.slice(0, this.config.maxCommits);
+    const visible = this.gitData.commits.slice(0, this.config.maxCommits);
 
     visible.forEach((commit, idx) => {
       const item = document.createElement("div");
@@ -156,7 +170,7 @@ Module.register("MMM-GitInfo", {
   _buildFooter() {
     const el = document.createElement("div");
     el.className = "gitinfo-footer";
-    el.innerHTML = `<i class="fas fa-rotate"></i> Aktualisiert ${this.data.fetchedAt}`;
+    el.innerHTML = `<i class="fas fa-rotate"></i> Aktualisiert ${this.gitData.fetchedAt}`;
     return el;
   },
 

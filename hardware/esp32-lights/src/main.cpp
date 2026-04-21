@@ -14,17 +14,9 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include "config.h"   // ← WLAN + MQTT-Zugangsdaten (nicht im Git)
 
-// ── Konfiguration – hier anpassen ─────────────────────────────────────────────
-
-const char* WIFI_SSID = "FES-Sus";
-const char* WIFI_PASS = "SuS-WLAN!Key24";
-
-// IP-Adresse des Raspberry Pi (MQTT-Broker)
-// Herausfinden mit: hostname -I   auf dem Pi
-const char* MQTT_HOST = "10.93.131.37";
-const int   MQTT_PORT = 1883;
-const char* MQTT_ID   = "esp32-lights";
+const char* MQTT_ID = "esp32-lights";
 
 // ── Verdrahtung ───────────────────────────────────────────────────────────────
 //

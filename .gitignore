@@ -78,3 +78,6 @@ yarn.lock
 
 # Vitest temporary test files
 tests/**/.tmp/
+
+# ESP32 Zugangsdaten
+hardware/**/config.h

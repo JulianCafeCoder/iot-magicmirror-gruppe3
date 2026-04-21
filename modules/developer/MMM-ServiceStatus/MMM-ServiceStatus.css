@@ -1,0 +1,63 @@
+.svcstatus-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 190px;
+}
+
+.svcstatus-loading {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1em;
+}
+
+/* ── Zeile ─────────────────────────────────────────────────────────────────── */
+
+.svcstatus-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ── Statusdot ─────────────────────────────────────────────────────────────── */
+
+.svc-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.svc-online .svc-dot {
+  background: #4cdb7a;
+  box-shadow: 0 0 6px rgba(76, 219, 122, 0.8);
+}
+
+.svc-offline .svc-dot {
+  background: #e05555;
+  box-shadow: 0 0 6px rgba(224, 85, 85, 0.7);
+}
+
+/* ── Label ─────────────────────────────────────────────────────────────────── */
+
+.svc-label {
+  flex: 1;
+  font-size: 0.78em;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.02em;
+}
+
+/* ── State-Text ────────────────────────────────────────────────────────────── */
+
+.svc-state {
+  font-size: 0.68em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.svc-online .svc-state { color: #4cdb7a; }
+.svc-offline .svc-state { color: #e05555; }

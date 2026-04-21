@@ -199,6 +199,11 @@ const PAGES = {
           module: "developer/MMM-GitInfo",
           position: "top_left",
           header: "Git Repository"
+        },
+        {
+          module: "developer/MMM-ServiceStatus",
+          position: "top_right",
+          header: "Services"
         }
       ]
     },

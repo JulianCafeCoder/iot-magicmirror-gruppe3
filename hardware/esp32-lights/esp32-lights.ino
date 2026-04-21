@@ -16,7 +16,7 @@
 
 // ── Konfiguration – hier anpassen ─────────────────────────────────────────────
 
-const char* WIFI_SSID = "FES-Sus";
+const char* WIFI_SSID = "FES-SuS";
 const char* WIFI_PASS = "SuS-WLAN!Key24";
 
 // IP-Adresse des Raspberry Pi (MQTT-Broker)
@@ -115,10 +115,9 @@ void onMqttMessage(char* topic, byte* payload, unsigned int length) {
   for (unsigned int i = 0; i < length; i++) msg += (char)payload[i];
 
   // Lichtnummer aus Topic extrahieren: home/lights/N/set
+  // "home/lights/" = 12 Zeichen, Nummer beginnt bei Index 12
   String topicStr(topic);
-  int slashAfterLights = topicStr.indexOf('/', 12);  // nach "home/lights/"
-  int slashBeforeSet   = topicStr.lastIndexOf('/');
-  String numStr = topicStr.substring(slashAfterLights + 1, slashBeforeSet);
+  String numStr = topicStr.substring(12, topicStr.lastIndexOf('/'));
   int lightNum = numStr.toInt();
 
   if (lightNum < 1 || lightNum > 8) {

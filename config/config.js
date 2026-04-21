@@ -214,6 +214,11 @@ const PAGES = {
           module: "developer/MMM-LightSwitches",
           position: "top_left",
           header: "Lichtsteuerung"
+        },
+        {
+          module: "developer/MMM-EnergyDashboard",
+          position: "top_right",
+          header: "Energie"
         }
       ]
     },

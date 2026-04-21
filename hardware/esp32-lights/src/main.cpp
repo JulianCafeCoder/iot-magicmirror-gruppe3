@@ -5,12 +5,13 @@
  * Lauscht auf home/lights/N/set (ON / OFF) und schaltet die entsprechende LED.
  * Bestätigt den neuen Zustand auf home/lights/N/status.
  *
- * Benötigte Libraries (Arduino Library Manager):
- *   - PubSubClient  (Nick O'Leary)
+ * Benötigte Libraries (platformio.ini):
+ *   lib_deps = knolleary/PubSubClient @ ^2.8
  *
- * Verdrahtung: siehe WIRING-Kommentar unten
+ * Verdrahtung: siehe WIRING.md
  */
 
+#include <Arduino.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
 
@@ -25,7 +26,7 @@ const char* MQTT_HOST = "10.93.131.37";
 const int   MQTT_PORT = 1883;
 const char* MQTT_ID   = "esp32-lights";
 
-// ── Verdrahtung (WIRING) ─────────────────────────────────────────────────────
+// ── Verdrahtung ───────────────────────────────────────────────────────────────
 //
 //  Zimmer          LED Nr.   GPIO    Widerstand
 //  Wohnzimmer        1       GPIO 16   220 Ω
@@ -46,12 +47,19 @@ const int LED_PINS[8] = {16, 17, 18, 19, 21, 22, 23, 25};
 
 // ── MQTT-Topics ───────────────────────────────────────────────────────────────
 
-const char* TOPIC_SUB = "home/lights/+/set";   // Befehle empfangen
+const char* TOPIC_SUB = "home/lights/+/set";
 
 // ── Interne Variablen ─────────────────────────────────────────────────────────
 
 WiFiClient   wifiClient;
 PubSubClient mqtt(wifiClient);
+
+// ── Funktionsprototypen ───────────────────────────────────────────────────────
+
+void connectWifi();
+void connectMqtt();
+void onMqttMessage(char* topic, byte* payload, unsigned int length);
+const char* getRoomName(int n);
 
 // ── Setup ─────────────────────────────────────────────────────────────────────
 
@@ -59,7 +67,6 @@ void setup() {
   Serial.begin(115200);
   Serial.println("\n=== ESP32 Lichtsteuerung ===");
 
-  // LED-Pins initialisieren
   for (int i = 0; i < 8; i++) {
     pinMode(LED_PINS[i], OUTPUT);
     digitalWrite(LED_PINS[i], LOW);
@@ -110,13 +117,12 @@ void connectMqtt() {
 // ── Nachricht empfangen ───────────────────────────────────────────────────────
 
 void onMqttMessage(char* topic, byte* payload, unsigned int length) {
-  // Payload in String umwandeln
   String msg = "";
   for (unsigned int i = 0; i < length; i++) msg += (char)payload[i];
 
   // Lichtnummer aus Topic extrahieren: home/lights/N/set
   String topicStr(topic);
-  int slashAfterLights = topicStr.indexOf('/', 12);  // nach "home/lights/"
+  int slashAfterLights = topicStr.indexOf('/', 12);
   int slashBeforeSet   = topicStr.lastIndexOf('/');
   String numStr = topicStr.substring(slashAfterLights + 1, slashBeforeSet);
   int lightNum = numStr.toInt();
@@ -126,16 +132,15 @@ void onMqttMessage(char* topic, byte* payload, unsigned int length) {
     return;
   }
 
-  // LED schalten
   bool on = (msg == "ON");
   int pin = LED_PINS[lightNum - 1];
   digitalWrite(pin, on ? HIGH : LOW);
 
   Serial.printf("Licht %d (%s) → %s\n", lightNum, getRoomName(lightNum), on ? "AN" : "AUS");
 
-  // Status zurückmelden
+  // Status zurückmelden (retain = true, damit MagicMirror beim Start den Zustand kennt)
   String statusTopic = "home/lights/" + String(lightNum) + "/status";
-  mqtt.publish(statusTopic.c_str(), msg.c_str(), true);  // retain = true
+  mqtt.publish(statusTopic.c_str(), msg.c_str(), true);
 }
 
 // ── Raumname (nur für Serial-Monitor) ────────────────────────────────────────

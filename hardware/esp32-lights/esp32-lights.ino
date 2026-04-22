@@ -42,7 +42,7 @@ const char* MQTT_ID   = "esp32-lights";
 //
 // ─────────────────────────────────────────────────────────────────────────────
 
-const int LED_PINS[8] = {16, 17, 18, 19, 21, 22, 23, 25};
+const int LED_PINS[8] = {16, 17, 18, 19, 21, 22, 23, 4};
 
 // ── MQTT-Topics ───────────────────────────────────────────────────────────────
 
@@ -59,7 +59,7 @@ void setup() {
   Serial.begin(115200);
   Serial.println("\n=== ESP32 Lichtsteuerung ===");
 
-  // LED-Pins initialisieren
+  // LED-Pins initialisieren (LOW = aus)
   for (int i = 0; i < 8; i++) {
     pinMode(LED_PINS[i], OUTPUT);
     digitalWrite(LED_PINS[i], LOW);

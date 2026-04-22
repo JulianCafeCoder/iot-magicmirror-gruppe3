@@ -17,7 +17,7 @@ ESP32 GPIO ──── [220 Ω] ──── LED (+) ──── LED (–) ─
 | Kinderzimmer   | 5     | 21   | E5                |
 | Arbeitszimmer  | 6     | 22   | E6                |
 | Flur           | 7     | 23   | E7                |
-| Keller         | 8     | 25   | E8                |
+| Keller         | 8     | 4    | D4 / E8           |
 
 ## Hinweise
 

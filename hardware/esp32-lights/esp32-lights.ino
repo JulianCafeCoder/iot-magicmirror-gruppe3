@@ -21,7 +21,7 @@ const char* WIFI_PASS = "SuS-WLAN!Key24";
 
 // IP-Adresse des Raspberry Pi (MQTT-Broker)
 // Herausfinden mit: hostname -I   auf dem Pi
-const char* MQTT_HOST = "10.93.131.37";
+const char* MQTT_HOST = "10.93.131.153";
 const int   MQTT_PORT = 1883;
 const char* MQTT_ID   = "esp32-lights";
 

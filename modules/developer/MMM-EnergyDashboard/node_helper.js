@@ -97,6 +97,8 @@ module.exports = NodeHelper.create({
           solar_kw:    Number(h.solar_kw),
           house_kw:    Number(h.house_kw),
           battery_pct: Number(h.battery_pct),
+          battery_kw:  Number(h.battery_kw),
+          grid_kw:     Number(h.grid_kw),
         })),
         source: this.useDb ? "db" : "dummy",
       });

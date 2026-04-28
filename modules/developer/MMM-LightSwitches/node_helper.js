@@ -74,6 +74,7 @@ module.exports = NodeHelper.create({
         this.client.publish(T.status(n), value, { retain: true, qos: 0 });
       } else {
         // Kein Broker erreichbar – trotzdem UI aktualisieren
+        Log.warn(`${this.name}: MQTT nicht verbunden – kein Publish`);
         this._sendState();
       }
     }

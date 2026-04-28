@@ -88,6 +88,21 @@ function createWindow () {
 	// Create the browser window.
 	mainWindow = new BrowserWindow(electronOptions);
 
+	// ── Permission handlers BEFORE loadURL ────────────────────────────────────
+	// Must be set before the page loads so any early permission check is caught.
+	// MagicMirror is a trusted local app → grant everything, but log each request
+	// so we can diagnose microphone issues in the terminal.
+	mainWindow.webContents.session.setPermissionRequestHandler((_wc, permission, callback) => {
+		Log.log(`[Electron] PermissionRequest: "${permission}" → GRANTED`);
+		callback(true);
+	});
+	mainWindow.webContents.session.setPermissionCheckHandler((_wc, permission, _origin, _details) => {
+		Log.log(`[Electron] PermissionCheck:   "${permission}" → true`);
+		return true;
+	});
+	Log.log("[Electron] Permission handlers registered (all granted).");
+	// ─────────────────────────────────────────────────────────────────────────
+
 	/*
 	 * and load the index.html of the app.
 	 * If config.address is not defined or is an empty string (listening on all interfaces), connect to localhost

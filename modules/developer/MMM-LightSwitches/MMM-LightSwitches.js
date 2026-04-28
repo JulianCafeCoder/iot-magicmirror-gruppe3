@@ -35,6 +35,23 @@ Module.register("MMM-LightSwitches", {
         const id = parseInt(key);
         this.sendSocketNotification("TOGGLE_LIGHT", { id });
       }
+      return;
+    }
+
+    // Sprachbefehl: {"id":N,"state":"on"|"off"|"toggle"}
+    // id=0 bedeutet alle Lichter
+    if (notification === "LIGHT_CONTROL") {
+      const { id, state } = payload || {};
+      const ids = id === 0
+        ? this.config.lights.map((l) => l.id)
+        : [id];
+      ids.forEach((n) => {
+        if (n < 1 || n > 8) return;
+        const on = !!this.lightState[n];
+        if (state === "toggle" || (state === "on" && !on) || (state === "off" && on)) {
+          this.sendSocketNotification("TOGGLE_LIGHT", { id: n });
+        }
+      });
     }
   },
 

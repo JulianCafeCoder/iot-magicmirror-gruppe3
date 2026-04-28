@@ -1,0 +1,298 @@
+.MMM-Launcher {
+  --mono: 'Space Mono', 'Courier New', monospace;
+  --sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  width: 100%;
+}
+
+/* ── 2×2 grid – füllt den ganzen Bereich ─────────────────────── */
+.MMM-Launcher .lp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 8px;
+  width: 100%;
+  height: calc(100vh - 80px);
+}
+
+/* ── Card ────────────────────────────────────────────────────── */
+.MMM-Launcher .lp-card {
+  display: flex;
+  flex-direction: column;
+  padding: 28px 32px 28px 32px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* animate only on first render (class added once per page visit) */
+.MMM-Launcher .lp-card--anim { animation: lpFadeIn 0.6s ease both; }
+.MMM-Launcher .lp-card--anim:nth-child(2) { animation-delay: 0.1s; }
+.MMM-Launcher .lp-card--anim:nth-child(3) { animation-delay: 0.15s; }
+.MMM-Launcher .lp-card--anim:nth-child(4) { animation-delay: 0.2s; }
+
+.MMM-Launcher .lp-card--selected {
+  border-color: rgba(255,255,255,0.55);
+  box-shadow: 0 0 24px rgba(255,255,255,0.06);
+}
+.MMM-Launcher .lp-card--active {
+  border-color: rgba(255,255,255,0.8);
+  box-shadow: 0 0 32px rgba(255,255,255,0.1);
+}
+
+/* ── Label (TIMER / STOPPUHR / …) ───────────────────────────── */
+.MMM-Launcher .lp-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+
+/* ── Big number display ──────────────────────────────────────── */
+.MMM-Launcher .lp-bignum {
+  font-family: var(--mono);
+  font-size: clamp(52px, 6.5vw, 96px);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: #fff;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+.MMM-Launcher .lp-bignum--pulse { animation: lpPulse 0.8s ease infinite; }
+
+/* centiseconds (smaller + dimmer) */
+.MMM-Launcher .lp-cs {
+  font-size: 0.42em;
+  opacity: 0.45;
+  margin-left: 6px;
+  vertical-align: baseline;
+}
+
+/* spacer pushes buttons to bottom */
+.MMM-Launcher .lp-spacer { flex: 1; }
+
+/* ── Actions (buttons) – always at card bottom ───────────────── */
+.MMM-Launcher .lp-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.MMM-Launcher .lp-btn {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 0;
+  background: transparent;
+  color: rgba(255,255,255,0.7);
+  cursor: default;
+}
+.MMM-Launcher .lp-btn--primary {
+  background: transparent;
+  color: #fff;
+  border-color: rgba(255,255,255,0.65);
+}
+.MMM-Launcher .lp-btn--sm {
+  font-size: 9px;
+  padding: 5px 12px;
+  border-color: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.3);
+}
+
+/* ── Timer: progress bar at card bottom ──────────────────────── */
+.MMM-Launcher .lp-progress-track {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: rgba(255,255,255,0.07);
+}
+.MMM-Launcher .lp-progress-bar {
+  height: 100%;
+  background: #fff;
+  transition: width 0.1s linear;
+}
+.MMM-Launcher .lp-progress-bar--pulse { animation: lpPulse 0.6s ease infinite; }
+
+/* ── Timer: edit fields ──────────────────────────────────────── */
+.MMM-Launcher .lp-edit-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+.MMM-Launcher .lp-field { display: flex; flex-direction: column; gap: 4px; }
+.MMM-Launcher .lp-field-lbl {
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+}
+.MMM-Launcher .lp-field-val {
+  font-family: var(--mono);
+  font-size: 16px;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 5px 8px;
+  width: 54px;
+  text-align: center;
+}
+.MMM-Launcher .lp-field-val--focus { border-color: rgba(255,255,255,0.8); }
+
+/* ── Stoppuhr laps ───────────────────────────────────────────── */
+.MMM-Launcher .lp-laps { margin-bottom: 0; overflow: hidden; flex-shrink: 0; }
+.MMM-Launcher .lp-lap {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  padding: 3px 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.MMM-Launcher .lp-lap:first-child { border-top: none; }
+
+/* ── Dice ────────────────────────────────────────────────────── */
+.MMM-Launcher .lp-dice-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 18px;
+  flex-shrink: 0;
+}
+.MMM-Launcher .lp-die {
+  width: 90px;
+  height: 90px;
+  border: 2px solid rgba(255,255,255,0.7);
+  position: relative;
+  flex-shrink: 0;
+  border-radius: 2px;
+}
+.MMM-Launcher .lp-die--spin { animation: lpDiceSpin 0.6s ease; }
+.MMM-Launcher .lp-dot {
+  position: absolute;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  transform: translate(-50%, -50%);
+}
+.MMM-Launcher .lp-die-text {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.05em;
+}
+.MMM-Launcher .lp-die-text--val { font-size: 28px; color: #fff; letter-spacing: -0.02em; }
+
+.MMM-Launcher .lp-types {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 16px; flex-shrink: 0;
+}
+.MMM-Launcher .lp-type-btn {
+  font-family: var(--sans);
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 5px 12px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  border-radius: 0;
+}
+.MMM-Launcher .lp-type-btn--active { background: transparent; color: #fff; border-color: rgba(255,255,255,0.65); }
+
+/* ── Notizen textarea ────────────────────────────────────────── */
+.MMM-Launcher .lp-textarea {
+  flex: 1;
+  background: transparent;
+  border: none; outline: none;
+  color: #fff; resize: none;
+  font-family: var(--sans);
+  font-size: 14px; font-weight: 300;
+  line-height: 1.7;
+  caret-color: #fff;
+  width: 100%;
+  min-height: 0;
+}
+.MMM-Launcher .lp-textarea[readonly] { cursor: default; }
+.MMM-Launcher .lp-textarea::placeholder { color: rgba(255,255,255,0.18); }
+
+.MMM-Launcher .lp-nt-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 10px; padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+.MMM-Launcher .lp-nt-count {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: rgba(255,255,255,0.2);
+}
+
+.MMM-Launcher .lp-nt-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.MMM-Launcher .lp-nt-status {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 6px;
+}
+.MMM-Launcher .lp-nt-status--error {
+  color: #ff6666;
+}
+
+.MMM-Launcher .lp-btn--mic {
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+.MMM-Launcher .lp-btn--recording {
+  color: #ff4444;
+  border-color: rgba(255, 68, 68, 0.5);
+  animation: lpPulse 0.8s ease infinite;
+}
+
+/* ── Hint bar below grid ─────────────────────────────────────── */
+.MMM-Launcher .lp-hint {
+  font-family: var(--sans);
+  font-size: 10px;
+  color: rgba(255,255,255,0.18);
+  letter-spacing: 0.1em;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* ── Animations ──────────────────────────────────────────────── */
+@keyframes lpFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes lpPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+@keyframes lpDiceSpin {
+  0%   { transform: rotateY(0deg)   rotateX(0deg)   scale(1);    }
+  30%  { transform: rotateY(180deg) rotateX(90deg)  scale(1.15); }
+  60%  { transform: rotateY(300deg) rotateX(200deg) scale(0.95); }
+  100% { transform: rotateY(360deg) rotateX(360deg) scale(1);    }
+}

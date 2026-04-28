@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap');
+
+.MMM-Dice {
+  --sm-mono: 'Space Mono', monospace;
+  --sm-sans: 'Inter', sans-serif;
+}
+
+.MMM-Dice .dc-card {
+  display: flex;
+  flex-direction: column;
+  padding: 28px 32px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  background: #000;
+  animation: dcFadeIn 0.6s 0.2s ease both;
+  min-height: 180px;
+}
+
+.MMM-Dice .dc-label {
+  font-family: var(--sm-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 20px;
+}
+
+/* ── Die + result row ────────────────────────────────────────────── */
+.MMM-Dice .dc-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.MMM-Dice .dc-die {
+  width: 88px;
+  height: 88px;
+  border: 2px solid rgba(255,255,255,0.6);
+  position: relative;
+  flex-shrink: 0;
+  transition: border-color 0.2s;
+}
+
+.MMM-Dice .dc-die--rolling {
+  animation: dcSpin 0.6s ease;
+}
+
+.MMM-Dice .dc-dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  transform: translate(-50%, -50%);
+}
+
+.MMM-Dice .dc-die-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sm-mono);
+  color: rgba(255,255,255,0.3);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+}
+
+.MMM-Dice .dc-die-text--value {
+  font-size: 28px;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.MMM-Dice .dc-result-big {
+  font-family: var(--sm-mono);
+  font-size: 48px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: #fff;
+}
+
+/* ── Dice type selector ──────────────────────────────────────────── */
+.MMM-Dice .dc-types {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.MMM-Dice .dc-type-btn {
+  font-family: var(--sm-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  cursor: default;
+  transition: all 0.15s ease;
+}
+
+.MMM-Dice .dc-type-btn--active {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+.MMM-Dice .dc-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.MMM-Dice .dc-btn {
+  font-family: var(--sm-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: transparent;
+  color: rgba(255,255,255,0.7);
+}
+
+.MMM-Dice .dc-btn--primary {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+.MMM-Dice .dc-hint {
+  font-family: var(--sm-sans);
+  font-size: 10px;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+
+@keyframes dcFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dcSpin {
+  0%   { transform: rotateY(0deg)   rotateX(0deg)   scale(1);    }
+  30%  { transform: rotateY(180deg) rotateX(90deg)  scale(1.15); }
+  60%  { transform: rotateY(300deg) rotateX(200deg) scale(0.95); }
+  100% { transform: rotateY(360deg) rotateX(360deg) scale(1);    }
+}

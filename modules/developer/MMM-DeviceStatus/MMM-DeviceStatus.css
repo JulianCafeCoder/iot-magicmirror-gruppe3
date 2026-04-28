@@ -1,0 +1,141 @@
+/* ── Wrapper ──────────────────────────────────────────────────────────────── */
+
+.ds-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 420px;
+}
+
+.ds-loading {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.9em;
+}
+
+/* ── Grid ─────────────────────────────────────────────────────────────────── */
+
+.ds-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 7px;
+}
+
+/* ── Card ─────────────────────────────────────────────────────────────────── */
+
+.ds-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: border-color 0.3s;
+}
+
+/* Status-tinted borders */
+.ds-s-active   { border-color: rgba(76,  219, 122, 0.22); }
+.ds-s-done     { border-color: rgba(90,  173, 255, 0.22); }
+.ds-s-charging { border-color: rgba(255, 170,  51, 0.22); }
+.ds-s-error    { border-color: rgba(224,  85,  85, 0.28); }
+
+/* ── Icon ─────────────────────────────────────────────────────────────────── */
+
+.ds-icon-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ds-icon-wrap .fas {
+  font-size: 1.2em;
+}
+
+/* Icon colours by status */
+.ds-s-active   .ds-icon-wrap .fas { color: #4cdb7a; }
+.ds-s-done     .ds-icon-wrap .fas { color: #5aadff; }
+.ds-s-idle     .ds-icon-wrap .fas { color: rgba(255, 255, 255, 0.3); }
+.ds-s-off      .ds-icon-wrap .fas { color: rgba(255, 255, 255, 0.18); }
+.ds-s-error    .ds-icon-wrap .fas { color: #e05555; }
+.ds-s-charging .ds-icon-wrap .fas { color: #ffaa33; }
+
+/* ── Pulse dot for active/charging ──────────────────────────────────────── */
+
+.ds-pulse {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4cdb7a;
+  animation: ds-pulse 1.8s ease-in-out infinite;
+}
+
+.ds-s-charging .ds-pulse { background: #ffaa33; }
+
+@keyframes ds-pulse {
+  0%   { transform: scale(1);   opacity: 1; }
+  60%  { transform: scale(1.5); opacity: 0.4; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+/* ── Body ─────────────────────────────────────────────────────────────────── */
+
+.ds-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.ds-name {
+  font-size: 0.78em;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ds-info {
+  font-size: 0.58em;
+  color: rgba(255, 255, 255, 0.38);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+/* ── Badge ────────────────────────────────────────────────────────────────── */
+
+.ds-badge {
+  flex-shrink: 0;
+  font-size: 0.55em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 7px;
+  border-radius: 20px;
+}
+
+.ds-b-active   { background: rgba(76,  219, 122, 0.15); color: #4cdb7a; }
+.ds-b-done     { background: rgba(90,  173, 255, 0.15); color: #5aadff; }
+.ds-b-idle     { background: rgba(255, 255, 255, 0.07); color: rgba(255, 255, 255, 0.38); }
+.ds-b-off      { background: rgba(255, 255, 255, 0.04); color: rgba(255, 255, 255, 0.22); }
+.ds-b-error    { background: rgba(224,  85,  85, 0.15); color: #e05555; }
+.ds-b-charging { background: rgba(255, 170,  51, 0.15); color: #ffaa33; }
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+
+.ds-footer {
+  font-size: 0.58em;
+  color: rgba(255, 255, 255, 0.25);
+  text-align: right;
+  padding-right: 2px;
+}
+
+.ds-footer .fas { margin-right: 4px; }
+
+.ds-live { color: #4cdb7a; animation: ds-pulse 2s ease-in-out infinite; }

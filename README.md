@@ -1,60 +1,274 @@
-# ![MagicMirror²: The open source modular smart mirror platform.](.github/header.png)
+# MagicMirror² – Eigener Setup
 
-<p style="text-align: center">
-  <a href="https://choosealicense.com/licenses/mit">
-  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
- </a>
- <img src="https://img.shields.io/github/actions/workflow/status/magicmirrororg/magicmirror/automated-tests.yaml" alt="GitHub Actions">
- <img src="https://img.shields.io/github/check-runs/magicmirrororg/magicmirror/master" alt="Build Status">
- <a href="https://github.com/MagicMirrorOrg/MagicMirror">
-  <img src="https://img.shields.io/github/stars/magicmirrororg/magicmirror?style=social" alt="GitHub Stars">
- </a>
-</p>
+Dieses Repository ist ein angepasstes [MagicMirror²](https://magicmirror.builders)-Projekt mit profilbasierter Konfiguration, Docker-Unterstützung für den Raspberry Pi und selbst entwickelten Modulen für Lichtsteuerung, Energie-Dashboard und mehr.
 
-**MagicMirror²** is an open source modular smart mirror platform. With a growing list of installable modules, the **MagicMirror²** allows you to convert your hallway or bathroom mirror into your personal assistant. **MagicMirror²** is built by the creator of [the original MagicMirror](https://michaelteeuw.nl/tagged/magicmirror) with the incredible help of a [growing community of contributors](https://github.com/MagicMirrorOrg/MagicMirror/graphs/contributors).
+---
 
-MagicMirror² focuses on a modular plugin system and uses [Electron](https://www.electronjs.org/) as an application wrapper. So no more web server or browser installs necessary!
+## Inhaltsverzeichnis
 
-![Animated demonstration of MagicMirror²](https://magicmirror.builders/img/demo.gif)
+1. [Voraussetzungen](#voraussetzungen)
+2. [Schnellstart (lokale Entwicklung)](#schnellstart-lokale-entwicklung)
+3. [Konfiguration: profile.js](#konfiguration-profilejs)
+4. [Nutzungsmodi](#nutzungsmodi)
+5. [Docker / Raspberry Pi](#docker--raspberry-pi)
+6. [Kiosk-Modus](#kiosk-modus)
+7. [Seiten-Navigation](#seiten-navigation)
+8. [Eigene Module](#eigene-module)
+9. [Hardware: ESP32-Lichtsteuerung](#hardware-esp32-lichtsteuerung)
+10. [Neue Seiten hinzufügen](#neue-seiten-hinzufügen)
 
-## Documentation
+---
 
-For the full documentation including **[installation instructions](https://docs.magicmirror.builders/getting-started/installation.html)**, please visit our dedicated documentation website: [https://docs.magicmirror.builders](https://docs.magicmirror.builders).
+## Voraussetzungen
 
-## Links
+| Komponente | Version / Hinweis |
+|---|---|
+| Node.js | 22 (LTS) |
+| npm | kommt mit Node.js |
+| Docker + Docker Compose | nur für Pi-Betrieb nötig |
+| MQTT-Broker (Mosquitto) | für `MMM-LightSwitches` |
+| PostgreSQL | für `MMM-EnergyDashboard` |
 
-- Website: [https://magicmirror.builders](https://magicmirror.builders)
-- Documentation: [https://docs.magicmirror.builders](https://docs.magicmirror.builders)
-- Forum: [https://forum.magicmirror.builders](https://forum.magicmirror.builders)
-  - Technical discussions: <https://forum.magicmirror.builders/category/11/core-system>
-- Discord: [https://discord.gg/J5BAtvx](https://discord.gg/J5BAtvx)
-- Blog: [https://michaelteeuw.nl/tagged/magicmirror](https://michaelteeuw.nl/tagged/magicmirror)
-- Donations: [https://magicmirror.builders/#donate](https://magicmirror.builders/#donate)
+---
 
-## Contributing Guidelines
+## Schnellstart (lokale Entwicklung)
 
-Contributions of all kinds are welcome, not only in the form of code but also with regards to
+```bash
+# 1. Abhängigkeiten installieren
+npm install
 
-- bug reports
-- documentation
-- translations
+# 2. Profil anlegen (einmalig)
+cp config/profile.example.js config/profile.js
+# Dann profile.js nach Bedarf anpassen (siehe unten)
 
-For the full contribution guidelines, check out: [https://docs.magicmirror.builders/about/contributing.html](https://docs.magicmirror.builders/about/contributing.html)
+# 3. MagicMirror starten
+npm start
+```
 
-## Enjoying MagicMirror? Consider a donation!
+Der Browser öffnet sich automatisch unter `http://localhost:8081`.
 
-MagicMirror² is Open Source and free. That doesn't mean we don't need any money.
+---
 
-Please consider a donation to help us cover the ongoing costs like webservers and email services.
-If we receive enough donations we might even be able to free up some working hours and spend some extra time improving the MagicMirror² core.
+## Konfiguration: profile.js
 
-To donate, please follow [this](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=G5D8E9MR5DTD2&source=url) link.
+Die Datei `config/profile.js` ist **gerätespezifisch** und nicht im Git enthalten. Sie steuert den Nutzungsmodus, den Standort und das Seiten-Timing.
 
-<p style="text-align: center">
-  <a href="https://forum.magicmirror.builders/topic/728/magicmirror-is-voted-number-1-in-the-magpi-top-50">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://magicmirror.builders/img/magpi-best-watermark.png">
-      <img src="https://magicmirror.builders/img/magpi-best-watermark-custom.png" width="150" alt="MagPi Top 50">
-    </picture>
-  </a>
-</p>
+```bash
+cp config/profile.example.js config/profile.js
+```
+
+Inhalt der Datei:
+
+```js
+module.exports = {
+  // "business" | "private" | "developer"
+  USAGE_TYPE: "business",
+
+  // Koordinaten für das Wettermodul
+  LOCATION: {
+    lat:  48.1351,
+    lon:  11.5820,
+    name: "München",
+  },
+
+  // Wie lange jede Seite angezeigt wird (Millisekunden)
+  PAGE_TIMING_MS: 15000,
+};
+```
+
+Fehlt die Datei, startet MagicMirror mit den Standardwerten (`business`, München, 15 s).
+
+---
+
+## Nutzungsmodi
+
+| Modus | Angezeigte Seiten |
+|---|---|
+| `business` | Haupt-Dashboard (Uhr, Wetter, Kalender, News) + Scrum Board |
+| `private` | Haupt-Dashboard + persönlicher Kalender + To-Do-Liste |
+| `developer` | **Nur** die Seiten aus `modules/developer/` (kein Haupt-Dashboard) |
+
+Der Modus wird in `config/profile.js` über `USAGE_TYPE` gesetzt.
+
+---
+
+## Docker / Raspberry Pi
+
+Das Projekt läuft auf dem Raspberry Pi als Docker-Container im Server-Only-Modus. Der Browser auf dem Pi lädt die Oberfläche von `localhost:8081`.
+
+### Einmalige Einrichtung auf dem Pi
+
+```bash
+# 1. profile.js auf dem Pi anlegen
+cp config/profile.example.js config/profile.js
+nano config/profile.js
+
+# 2. Image bauen und Container starten
+docker compose up -d
+```
+
+### Nützliche Befehle
+
+```bash
+docker compose up -d          # Container starten (im Hintergrund)
+docker compose down           # Container stoppen
+docker compose logs -f        # Logs live verfolgen
+docker compose build --no-cache  # Image neu bauen (nach Code-Änderungen)
+```
+
+**Hinweis:** `network_mode: host` im `docker-compose.yml` ist Linux-only (funktioniert auf dem Pi, nicht auf macOS).
+
+---
+
+## Kiosk-Modus
+
+Das Skript `scripts/kiosk.sh` startet Chromium im Vollbild-Kiosk-Modus, sobald der MagicMirror-Server erreichbar ist. Es läuft direkt auf dem Pi-Host (nicht im Container).
+
+### Einrichtung (einmalig auf dem Pi)
+
+```bash
+chmod +x scripts/kiosk.sh
+```
+
+**Autostart beim Booten** – Option 1: `crontab`
+
+```bash
+crontab -e
+# Folgende Zeile hinzufügen:
+@reboot /home/pi/MagicMirror/scripts/kiosk.sh &
+```
+
+**Autostart beim Booten** – Option 2: `.desktop`-Datei
+
+```bash
+mkdir -p ~/.config/autostart
+cat > ~/.config/autostart/kiosk.desktop <<EOF
+[Desktop Entry]
+Type=Application
+Exec=/home/pi/MagicMirror/scripts/kiosk.sh
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name=MagicMirror Kiosk
+EOF
+```
+
+---
+
+## Seiten-Navigation
+
+| Taste | Aktion |
+|---|---|
+| `→` Pfeil rechts | Nächste Seite |
+| `←` Pfeil links | Vorherige Seite |
+
+Die Seiten rotieren außerdem automatisch nach `PAGE_TIMING_MS` Millisekunden (Standard: 15 s). Im `developer`-Modus ist die automatische Rotation deaktiviert.
+
+---
+
+## Eigene Module
+
+Alle selbst entwickelten Module liegen unter `modules/developer/`.
+
+### MMM-LightSwitches
+
+Zeigt 8 Lichtschalter und steuert echte Geräte über MQTT.
+
+- **MQTT-Topics:** `home/lights/<n>/set` (Befehl) / `home/lights/<n>/status` (Zustand)
+- **Broker:** wird unter `localhost:1883` erwartet
+- **Abhängigkeit:** `mqtt` npm-Paket (in `package.json` des Moduls)
+
+```bash
+cd modules/developer/MMM-LightSwitches
+npm install
+```
+
+### MMM-EnergyDashboard
+
+Visualisiert Solar-, Haus-, Batterie- und Netzwerte aus einer PostgreSQL-Datenbank.
+
+**Datenbank einrichten (einmalig):**
+
+```bash
+psql -U <user> -d <datenbank> -f modules/developer/MMM-EnergyDashboard/schema.sql
+```
+
+**Abhängigkeit installieren:**
+
+```bash
+cd modules/developer/MMM-EnergyDashboard
+npm install
+```
+
+Die Datenbankverbindung wird im Modul konfiguriert. Standard-Host: `10.93.131.37:5432`.
+
+### MMM-ServiceStatus
+
+Prüft alle 30 Sekunden, ob folgende Dienste erreichbar sind:
+
+| Service | Typ | Adresse |
+|---|---|---|
+| MM Backend | intern | – |
+| MM Frontend | TCP | localhost:8081 |
+| Datenbank | TCP | 10.93.131.37:5432 |
+| MQTT Broker | TCP | localhost:1883 |
+| Internet | HTTPS | 1.1.1.1 |
+
+### MMM-GitInfo
+
+Zeigt Informationen über das lokale Git-Repository (Branch, letzter Commit, Status).
+
+### Weitere Module
+
+| Modul | Beschreibung |
+|---|---|
+| `MMM-Launcher` | App-/Link-Starter für den Developer-Modus |
+| `MMM-Dice` | Würfel-Modul |
+| `MMM-Notes` | Notizen-Modul |
+| `MMM-Stopwatch` | Stoppuhr |
+| `MMM-Timer` | Timer |
+
+---
+
+## Hardware: ESP32-Lichtsteuerung
+
+Der Quellcode für die ESP32-Firmware liegt unter `hardware/esp32-lights/`.
+
+| Datei | Inhalt |
+|---|---|
+| `esp32-lights.ino` | Arduino-Sketch (MQTT-Client, Lichtsteuerung) |
+| `platformio.ini` | PlatformIO-Projektkonfiguration |
+| `WIRING.md` | Verdrahtungsplan |
+
+**Wichtig:** Zugangsdaten (WLAN, MQTT) werden in einer `config.h` gepflegt, die **nicht** im Git liegt (in `.gitignore` eingetragen). Vorlage anlegen und anpassen:
+
+```bash
+cp hardware/esp32-lights/config.h.example hardware/esp32-lights/config.h
+```
+
+---
+
+## Neue Seiten hinzufügen
+
+1. Öffne `config/config.js`
+2. Trage einen neuen Eintrag im gewünschten Abschnitt (`shared`, `business`, `private` oder `developer`) ein:
+
+```js
+{
+  pageClass: "biz-meine-seite",   // eindeutige CSS-Klasse
+  modules: [
+    {
+      module: "mein-modul",
+      position: "top_left",
+      header: "Mein Modul",
+      config: { /* ... */ }
+    }
+  ]
+}
+```
+
+3. MagicMirror neu starten – die neue Seite erscheint automatisch in der Rotation.
+
+**Regeln:**
+- `pageClass` muss einmalig und eindeutig sein (z. B. `biz-analytics`, `priv-fitness`)
+- Module im `developer`-Abschnitt müssen unter `modules/developer/<MMM-Name>/` liegen

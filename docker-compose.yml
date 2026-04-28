@@ -1,0 +1,15 @@
+services:
+  magicmirror:
+    build: .
+    image: magicmirror:latest
+    restart: unless-stopped
+    # host network: container shares the Pi's network stack, so Chromium on the
+    # host can reach the server via localhost:8081 and the ipWhitelist still works.
+    # Note: network_mode: host is Linux-only (fine for Pi, not for Mac).
+    network_mode: host
+    volumes:
+      # profile.js is device-specific (location, usage type, timing) – mount it
+      # from the Pi's filesystem so it stays outside the image.
+      - ./config/profile.js:/opt/magicmirror/config/profile.js:ro
+    environment:
+      - TZ=Europe/Berlin

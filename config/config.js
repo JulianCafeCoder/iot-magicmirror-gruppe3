@@ -22,6 +22,8 @@ try {
 const USAGE_TYPE     = profile.USAGE_TYPE    ?? "business";
 const LOCATION       = profile.LOCATION      ?? { lat: 48.1351, lon: 11.5820, name: "München" };
 const PAGE_TIMING_MS = profile.PAGE_TIMING_MS ?? 15000;
+const OPENAI_API_KEY = profile.OPENAI_API_KEY ?? "";
+const GROQ_API_KEY   = profile.GROQ_API_KEY   ?? "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";
 
 console.log(`[MagicMirror] ▶ Modus: ${USAGE_TYPE} | Ort: ${LOCATION.name} | Timing: ${PAGE_TIMING_MS}ms`);
 
@@ -216,6 +218,11 @@ const PAGES = {
           header: "Lichtsteuerung"
         },
         {
+          module: "developer/MMM-DeviceStatus",
+          position: "top_left",
+          header: "Geräte"
+        },
+        {
           module: "developer/MMM-EnergyDashboard",
           position: "top_right",
           header: "Energie"
@@ -226,15 +233,42 @@ const PAGES = {
       pageClass: "dev-page3",
       modules: [
         {
-          module: "developer/MMM-DevPage",
-          position: "middle_center",
-          header: "Seite 3",
+          module: "developer/MMM-Launcher",
+          position: "middle_center"
+        }
+      ]
+    },
+    {
+      pageClass: "dev-calendar",
+      modules: [
+        {
+          module: "developer/MMM-CompanyCalendar",
+          position: "fullscreen_above",
+          header: "Firmenkalender",
           config: {
-            text: "Diese Seite ist noch leer."
+            viewMode: "week",          // "week" | "month"
+            fetchInterval: 15 * 60 * 1000,
+            firstDayOfWeek: 1,
+            maxEventsPerDay: 5,
+            showLocation: true,
+            mirrorConfigId: 1,         // ID aus mm_mirror_configs (Fallback: employees-Array)
+            employees: [
+              // Beispiel-Einträge – ICS-URLs der Mitarbeiter hier eintragen:
+              // {
+              //   name: "Max Mustermann",
+              //   color: "#4a9eff",
+              //   url: "https://example.com/max.ics"
+              // },
+              // {
+              //   name: "Anna Schmidt",
+              //   color: "#ff7043",
+              //   url: "https://example.com/anna.ics"
+              // },
+            ]
           }
         }
       ]
-    }
+    },
     // Weitere Developer-Seiten hier einfügen:
     // { pageClass: "dev-performance", modules: [ ... ] },
   ]
@@ -266,7 +300,7 @@ const pageModules = activePages.flatMap((page) =>
 // ─────────────────────────────────────────────────────────────────────────────
 
 let config = {
-  address: "localhost",
+  address: process.env.MM_ADDRESS || "localhost",
   port: 8081,
   basePath: "/",
   ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1"],
@@ -286,14 +320,33 @@ let config = {
     { module: "alert" },
     { module: "updatenotification", position: "top_bar" },
 
+    // ── Globaler Diktierdienst (MediaRecorder + Whisper API) ─────────────
+    // provider: "groq" (kostenlos, console.groq.com) | "openai" ($0.006/min)
+    {
+      module: "developer/MMM-Dictation",
+      position: "bottom_right",
+      config: {
+        language: "de",
+        provider: "groq",
+        apiKey: GROQ_API_KEY || OPENAI_API_KEY,
+      }
+    },
+
     // ── Tastatur-Navigation (Pfeiltasten → MMM-pages) ─────────────────────
     {
       module: "MMM-KeyBindings",
       config: {
         enableKeyboard: true,
         // Ziffern 1–8 müssen explizit zur Abhörliste hinzugefügt werden
-        handleKeys: ["1", "2", "3", "4", "5", "6", "7", "8"],
+        // Alle Tasten, die als KEYPRESS weitergeleitet werden sollen
+        handleKeys: [
+          "1", "2", "3", "4", "5", "6", "7", "8",
+          "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown",
+          "Enter", "Escape", " ", "Delete", "Backspace", "r", "R",
+          "."
+        ],
         actions: [
+          // Seiten blättern nur im DEFAULT-Modus (nicht im LAUNCHER/MODULE-Modus)
           {
             key: "ArrowRight",
             state: "KEY_PRESSED",
@@ -306,7 +359,7 @@ let config = {
             mode: "DEFAULT",
             notification: "PAGE_DECREMENT"
           }
-          // Tasten 1–8 werden direkt von MMM-LightSwitches via KEYPRESS-Notification verarbeitet
+          // Alle anderen Tasten werden per KEYPRESS-Notification weitergeleitet
         ]
       }
     },
@@ -316,11 +369,10 @@ let config = {
       module: "MMM-pages",
       config: {
         modules: pagesMatrix,
-        fixed: ["alert", "updatenotification", "MMM-KeyBindings"],
-        timings: {
-          default: PAGE_TIMING_MS,
-          1: 60 * 1000   // Aurora-Seite (Index 1) läuft 60 Sekunden
-        },
+        fixed: ["alert", "updatenotification", "MMM-KeyBindings", "MMM-Dictation"],
+        timings: USAGE_TYPE === "developer"
+          ? { default: 0 }
+          : { default: PAGE_TIMING_MS, 1: 60 * 1000 },
         animationTime: 800
       }
     },

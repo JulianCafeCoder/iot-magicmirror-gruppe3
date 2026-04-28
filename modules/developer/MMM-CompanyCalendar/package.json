@@ -1,0 +1,10 @@
+{
+  "name": "mmm-companycalendar",
+  "version": "1.0.0",
+  "description": "Firmenkalender für MagicMirror – zeigt ICS-Kalender aller Mitarbeiter",
+  "main": "node_helper.js",
+  "dependencies": {
+    "node-ical": "^0.26.0",
+    "pg": "^8.13.0"
+  }
+}

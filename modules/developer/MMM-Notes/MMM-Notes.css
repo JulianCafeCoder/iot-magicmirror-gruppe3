@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap');
+
+.MMM-Notes {
+  --sm-mono: 'Space Mono', monospace;
+  --sm-sans: 'Inter', sans-serif;
+}
+
+.MMM-Notes .nt-card {
+  display: flex;
+  flex-direction: column;
+  padding: 28px 32px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  background: #000;
+  animation: ntFadeIn 0.6s 0.3s ease both;
+  min-height: 180px;
+}
+
+.MMM-Notes .nt-label {
+  font-family: var(--sm-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 16px;
+}
+
+.MMM-Notes .nt-textarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  resize: none;
+  font-family: var(--sm-sans);
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.7;
+  caret-color: #fff;
+  min-height: 120px;
+  width: 100%;
+}
+
+.MMM-Notes .nt-textarea::placeholder {
+  color: rgba(255,255,255,0.2);
+}
+
+.MMM-Notes .nt-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.MMM-Notes .nt-count {
+  font-family: var(--sm-mono);
+  font-size: 10px;
+  color: rgba(255,255,255,0.2);
+}
+
+.MMM-Notes .nt-btn {
+  font-family: var(--sm-sans);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: rgba(255,255,255,0.4);
+}
+
+.MMM-Notes .nt-hint {
+  font-family: var(--sm-sans);
+  font-size: 10px;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+
+@keyframes ntFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

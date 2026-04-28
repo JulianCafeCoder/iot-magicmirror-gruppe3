@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap');
+
+.MMM-Timer {
+  --sm-mono: 'Space Mono', monospace;
+  --sm-sans: 'Inter', sans-serif;
+}
+
+.MMM-Timer .tm-card {
+  display: flex;
+  flex-direction: column;
+  padding: 28px 32px 0;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+  animation: smFadeIn 0.6s ease both;
+  min-height: 180px;
+}
+
+.MMM-Timer .tm-label {
+  font-family: var(--sm-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 20px;
+}
+
+.MMM-Timer .tm-display {
+  font-family: var(--sm-mono);
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.MMM-Timer .tm-display--done {
+  animation: smPulse 0.8s ease infinite;
+}
+
+.MMM-Timer .tm-edit-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.MMM-Timer .tm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.MMM-Timer .tm-field-label {
+  font-family: var(--sm-sans);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+}
+
+.MMM-Timer .tm-field-value {
+  font-family: var(--sm-mono);
+  font-size: 14px;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 4px 8px;
+  width: 52px;
+  text-align: center;
+}
+
+.MMM-Timer .tm-field-value--active {
+  border-color: rgba(255,255,255,0.7);
+}
+
+.MMM-Timer .tm-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  padding-bottom: 28px;
+}
+
+.MMM-Timer .tm-btn {
+  font-family: var(--sm-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: transparent;
+  color: rgba(255,255,255,0.7);
+  cursor: default;
+}
+
+.MMM-Timer .tm-btn--primary {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+/* ── Progress bar ────────────────────────────────────────────────── */
+.MMM-Timer .tm-progress-track {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: rgba(255,255,255,0.08);
+}
+
+.MMM-Timer .tm-progress-bar {
+  height: 100%;
+  background: #fff;
+  transition: width 0.1s linear;
+}
+
+.MMM-Timer .tm-progress-bar--done {
+  animation: smPulse 0.6s ease infinite;
+}
+
+.MMM-Timer .tm-hint {
+  font-family: var(--sm-sans);
+  font-size: 10px;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.1em;
+  margin-bottom: 14px;
+}
+
+@keyframes smFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes smPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}

@@ -1,0 +1,10 @@
+node_modules/
+**/.git
+*.log
+
+# Device-specific – must be provided as a volume on the Pi
+config/profile.js
+
+# Not needed in the server container
+hardware/
+tests/

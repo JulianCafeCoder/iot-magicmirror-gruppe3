@@ -38,7 +38,10 @@ Module.register("MMM-CompanyCalendar", {
         this.viewOffset += 1;
         this.updateDom(200);
       } else if (payload.keyName === "ArrowLeft") {
-        this.viewOffset = Math.max(0, this.viewOffset - 1);
+        this.viewOffset -= 1;
+        this.updateDom(200);
+      } else if (payload.keyName === "t" || payload.keyName === "T") {
+        this.viewOffset = 0;
         this.updateDom(200);
       } else if (payload.keyName === "m" || payload.keyName === "M") {
         this.config.viewMode = this.config.viewMode === "week" ? "month" : "week";

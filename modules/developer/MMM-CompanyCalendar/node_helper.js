@@ -9,15 +9,15 @@ const DB_CONFIG = {
   user:                    "gruppe3",
   password:                "gruppe3",
   connectionTimeoutMillis: 5000,
+  max:                     5,
 };
 
 module.exports = NodeHelper.create({
 
   start() {
-    this.pgClient      = null;
-    this.useDb         = false;
-    this.config        = null;
-    this._timer        = null;
+    this.pool   = null;
+    this.useDb  = false;
+    this.config = null;
   },
 
   socketNotificationReceived(notification, payload) {
@@ -27,15 +27,16 @@ module.exports = NodeHelper.create({
     }
   },
 
-  // ── PostgreSQL verbinden ────────────────────────────────────────────────
+  // ── PostgreSQL Pool ────────────────────────────────────────────────────────
 
   async _initDb() {
     try {
-      const { Client } = require("pg");
-      const client = new Client(DB_CONFIG);
-      await client.connect();
-      this.pgClient = client;
-      this.useDb    = true;
+      const { Pool } = require("pg");
+      this.pool  = new Pool(DB_CONFIG);
+      // Verbindung einmalig testen
+      const client = await this.pool.connect();
+      client.release();
+      this.useDb = true;
       console.log(`[${this.name}] PostgreSQL verbunden`);
     } catch (err) {
       console.warn(`[${this.name}] PostgreSQL nicht erreichbar – nutze config.employees (${err.message})`);
@@ -44,19 +45,17 @@ module.exports = NodeHelper.create({
     await this._fetchAll();
   },
 
-  // ── Periodisch neu laden ────────────────────────────────────────────────
-
   _scheduleRefresh() {
     const interval = this.config.fetchInterval || 15 * 60 * 1000;
-    this._timer = setInterval(() => this._fetchAll(), interval);
+    setInterval(() => this._fetchAll(), interval);
   },
 
-  // ── Mitarbeiter-Liste laden ────────────────────────────────────────────
+  // ── Mitarbeiter laden ──────────────────────────────────────────────────────
 
   async _loadEmployees() {
     if (this.useDb && this.config.mirrorConfigId) {
       try {
-        const res = await this.pgClient.query(
+        const res = await this.pool.query(
           `SELECT id, name, color, ics_url AS url
              FROM calendar_employees
             WHERE mirror_config_id = $1 AND active = TRUE
@@ -65,14 +64,13 @@ module.exports = NodeHelper.create({
         );
         if (res.rows.length > 0) return res.rows;
       } catch (err) {
-        console.error(`[${this.name}] DB-Fehler beim Laden der Mitarbeiter: ${err.message}`);
+        console.error(`[${this.name}] DB-Fehler Mitarbeiter: ${err.message}`);
       }
     }
-    // Fallback: direkt aus der Modul-Konfiguration
     return this.config.employees || [];
   },
 
-  // ── ICS-Feeds laden und cachen ─────────────────────────────────────────
+  // ── ICS-Feeds laden ────────────────────────────────────────────────────────
 
   async _fetchAll() {
     const employees = await this._loadEmployees();
@@ -84,15 +82,11 @@ module.exports = NodeHelper.create({
           const data   = await ical.async.fromURL(emp.url);
           const events = this._parseEvents(data, emp);
           allEvents.push(...events);
-          if (this.useDb && emp.id) {
-            await this._cacheEvents(emp.id, events);
-          }
+          if (this.useDb && emp.id) await this._cacheEvents(emp.id, events);
         } catch (err) {
           console.error(`[${this.name}] Fehler beim Laden von ${emp.name}: ${err.message}`);
-          // Bei Fehler: gecachte Events aus der DB als Fallback
           if (this.useDb && emp.id) {
-            const cached = await this._loadCached(emp.id, emp);
-            allEvents.push(...cached);
+            allEvents.push(...await this._loadCached(emp.id, emp));
           }
         }
       })
@@ -102,50 +96,45 @@ module.exports = NodeHelper.create({
     this.sendSocketNotification("CALENDAR_EVENTS", allEvents);
   },
 
-  // ── Events in die DB schreiben ─────────────────────────────────────────
+  // ── Cache schreiben ────────────────────────────────────────────────────────
 
   async _cacheEvents(employeeId, events) {
     try {
-      for (const ev of events) {
-        await this.pgClient.query(
+      await Promise.all(events.map(ev =>
+        this.pool.query(
           `INSERT INTO calendar_events_cache
              (employee_id, uid, title, start_at, end_at, all_day, location, fetched_at)
-           VALUES ($1, $2, $3, to_timestamp($4 / 1000.0), to_timestamp($5 / 1000.0), $6, $7, NOW())
-           ON CONFLICT (employee_id, uid)
-           DO UPDATE SET
-             title      = EXCLUDED.title,
-             start_at   = EXCLUDED.start_at,
-             end_at     = EXCLUDED.end_at,
-             all_day    = EXCLUDED.all_day,
-             location   = EXCLUDED.location,
-             fetched_at = NOW()`,
+           VALUES ($1,$2,$3,to_timestamp($4/1000.0),to_timestamp($5/1000.0),$6,$7,NOW())
+           ON CONFLICT (employee_id, uid) DO UPDATE SET
+             title=EXCLUDED.title, start_at=EXCLUDED.start_at, end_at=EXCLUDED.end_at,
+             all_day=EXCLUDED.all_day, location=EXCLUDED.location, fetched_at=NOW()`,
           [employeeId, ev.id, ev.title, ev.start, ev.end, ev.allDay, ev.location || null]
-        );
-      }
+        )
+      ));
     } catch (err) {
-      console.error(`[${this.name}] Fehler beim Cachen (emp ${employeeId}): ${err.message}`);
+      console.error(`[${this.name}] Cache-Fehler (emp ${employeeId}): ${err.message}`);
     }
   },
 
-  // ── Fallback: Events aus dem Cache lesen ──────────────────────────────
+  // ── Cache lesen ────────────────────────────────────────────────────────────
 
   async _loadCached(employeeId, emp) {
     try {
       const rangeStart = Date.now() - 7  * 24 * 60 * 60 * 1000;
       const rangeEnd   = Date.now() + 60 * 24 * 60 * 60 * 1000;
-      const res = await this.pgClient.query(
+      const res = await this.pool.query(
         `SELECT uid, title,
-                EXTRACT(EPOCH FROM start_at) * 1000 AS start,
-                EXTRACT(EPOCH FROM end_at)   * 1000 AS end,
+                EXTRACT(EPOCH FROM start_at)*1000 AS start,
+                EXTRACT(EPOCH FROM end_at  )*1000 AS end,
                 all_day, location
            FROM calendar_events_cache
           WHERE employee_id = $1
-            AND start_at < to_timestamp($3 / 1000.0)
-            AND end_at   > to_timestamp($2 / 1000.0)
+            AND start_at < to_timestamp($3/1000.0)
+            AND end_at   > to_timestamp($2/1000.0)
           ORDER BY start_at`,
         [employeeId, rangeStart, rangeEnd]
       );
-      return res.rows.map((row) => ({
+      return res.rows.map(row => ({
         id:       row.uid,
         title:    row.title,
         start:    Number(row.start),
@@ -156,12 +145,12 @@ module.exports = NodeHelper.create({
         color:    emp.color || "#aaaaaa",
       }));
     } catch (err) {
-      console.error(`[${this.name}] Fehler beim Lesen des Cache: ${err.message}`);
+      console.error(`[${this.name}] Cache-Lesefehler: ${err.message}`);
       return [];
     }
   },
 
-  // ── ICS parsen ─────────────────────────────────────────────────────────
+  // ── ICS parsen ─────────────────────────────────────────────────────────────
 
   _parseEvents(data, employee) {
     const now        = new Date();

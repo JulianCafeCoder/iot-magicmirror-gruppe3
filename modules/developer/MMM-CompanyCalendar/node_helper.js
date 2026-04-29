@@ -3,9 +3,11 @@ const ical = require("node-ical");
 const { expandRecurringEvent } = ical;
 
 const DB_CONFIG = {
-  host:                    "/var/run/postgresql",
+  host:                    "localhost",
+  port:                    5432,
   database:                "postgres",
   user:                    "gruppe3",
+  password:                "gruppe3",
   connectionTimeoutMillis: 3000,
 };
 

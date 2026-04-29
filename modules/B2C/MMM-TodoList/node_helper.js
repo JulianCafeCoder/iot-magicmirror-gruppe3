@@ -16,10 +16,12 @@ const DB_CONFIG = {
 module.exports = NodeHelper.create({
 
   start() {
-    this.todosFile = path.join(this.path, "todos.json");
-    this.pool      = null;
-    this.useDb     = false;
-    this.userId    = null;
+    this.todosFile   = path.join(this.path, "todos.json");
+    this.pool        = null;
+    this.useDb       = false;
+    this.userId      = null;
+    this._dbReady    = false;
+    this._pendingLoad = null;
     this._initDb();
   },
 
@@ -31,17 +33,34 @@ module.exports = NodeHelper.create({
       this.pool = new Pool(DB_CONFIG);
       const client = await this.pool.connect();
       client.release();
-      this.useDb = true;
+      this.useDb   = true;
+      this._dbReady = true;
       Log.info(`${this.name}: PostgreSQL verbunden`);
+      // Falls LOAD_TODOS vor DB-Verbindung ankam, jetzt nachladen
+      if (this._pendingLoad !== null) {
+        await this._load(this._pendingLoad);
+        this._pendingLoad = null;
+      }
     } catch (err) {
+      this._dbReady = true; // auch bei Fehler: bereit (nutzt JSON)
       Log.warn(`${this.name}: PostgreSQL nicht erreichbar – nutze todos.json (${err.message})`);
+      if (this._pendingLoad !== null) {
+        await this._load(this._pendingLoad);
+        this._pendingLoad = null;
+      }
     }
   },
 
   // ── Notifications ──────────────────────────────────────────────────────────
 
   socketNotificationReceived(notification, payload) {
-    if (notification === "LOAD_TODOS")   this._load(payload?.userId);
+    if (notification === "LOAD_TODOS") {
+      if (!this._dbReady) {
+        this._pendingLoad = payload?.userId ?? null; // warten bis DB bereit
+      } else {
+        this._load(payload?.userId);
+      }
+    }
     if (notification === "TOGGLE_TODO")  this._toggle(payload.id);
     if (notification === "ADD_TODO")     this._add(payload);
     if (notification === "DELETE_TODO")  this._delete(payload.id);

@@ -3,12 +3,12 @@ const ical = require("node-ical");
 const { expandRecurringEvent } = ical;
 
 const DB_CONFIG = {
-  host:                    "localhost",
+  host:                    process.env.PG_HOST || "10.93.131.37",
   port:                    5432,
   database:                "postgres",
   user:                    "gruppe3",
   password:                "gruppe3",
-  connectionTimeoutMillis: 3000,
+  connectionTimeoutMillis: 5000,
 };
 
 module.exports = NodeHelper.create({

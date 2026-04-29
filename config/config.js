@@ -151,41 +151,6 @@ const PAGES = {
   // ── Seiten nur für Nutzungsart "private" ────────────────────────────────
   private: [
     {
-      pageClass: "priv-main",
-      modules: [
-        {
-          module: "calendar",
-          header: "Meine Termine",
-          position: "top_left",
-          config: {
-            maximumEntries: 12,
-            calendars: [
-              {
-                fetchInterval: 60 * 60 * 1000,
-                symbol: "calendar-check",
-                url: "https://ics.calendarlabs.com/76/mm3137/US_Holidays.ics"
-              }
-            ]
-          }
-        },
-        {
-          module: "compliments",
-          position: "middle_center"
-        },
-        {
-          module: "weather",
-          position: "top_right",
-          header: `Wetter heute – ${LOCATION.name}`,
-          config: {
-            weatherProvider: "openmeteo",
-            type: "current",
-            lat: LOCATION.lat,
-            lon: LOCATION.lon
-          }
-        }
-      ]
-    },
-    {
       pageClass: "priv-todos",
       modules: [
         {

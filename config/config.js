@@ -134,6 +134,24 @@ const PAGES = {
           }
         }
       ]
+    },
+    {
+      pageClass: "biz-calendar",
+      modules: [
+        {
+          module: "developer/MMM-CompanyCalendar",
+          position: "fullscreen_above",
+          header: "Firmenkalender",
+          config: {
+            fetchInterval:   15 * 60 * 1000,
+            firstDayOfWeek:  1,
+            maxEventsPerDay: 5,
+            showLocation:    true,
+            mirrorConfigId:  1,
+            employees: []
+          }
+        }
+      ]
     }
     // Weitere Business-Seiten hier einfügen:
     // { pageClass: "biz-analytics", modules: [ ... ] },
@@ -142,7 +160,7 @@ const PAGES = {
   // ── Seiten nur für Nutzungsart "private" ────────────────────────────────
   private: [
     {
-      pageClass: "priv-todo",
+      pageClass: "priv-main",
       modules: [
         {
           module: "calendar",
@@ -184,36 +202,13 @@ const PAGES = {
           position: "top_left",
           header: "To-Do Liste",
           config: {
-            userId: 2   // ID aus mm_users (Home User)
+            userId: 2
           }
-        }
-      ]
-    }
-    // Weitere Private-Seiten hier einfügen:
-    // { pageClass: "priv-fitness", modules: [ ... ] },
-  ],
-
-  // ── Seiten nur für Nutzungsart "developer" ───────────────────────────────
-  // Zeigt AUSSCHLIESSLICH diese Seiten – kein Haupt-Dashboard, kein B2B/B2C.
-  // Module müssen in modules/developer/<MMM-Name>/ liegen.
-  developer: [
-    {
-      pageClass: "dev-git",
-      modules: [
-        {
-          module: "developer/MMM-GitInfo",
-          position: "top_left",
-          header: "Git Repository"
-        },
-        {
-          module: "developer/MMM-ServiceStatus",
-          position: "top_right",
-          header: "Services"
         }
       ]
     },
     {
-      pageClass: "dev-page2",
+      pageClass: "priv-smarthome",
       modules: [
         {
           module: "developer/MMM-LightSwitches",
@@ -231,47 +226,39 @@ const PAGES = {
           header: "Energie"
         }
       ]
+    }
+    // Weitere Private-Seiten hier einfügen:
+    // { pageClass: "priv-fitness", modules: [ ... ] },
+  ],
+
+  // ── Seiten nur für Nutzungsart "developer" ───────────────────────────────
+  // Developer sieht ALLE Seiten (shared + business + private + developer).
+  // Diese Seiten sind zusätzlich zu den anderen Modi sichtbar.
+  developer: [
+    {
+      pageClass: "dev-git",
+      modules: [
+        {
+          module: "developer/MMM-GitInfo",
+          position: "top_left",
+          header: "Git Repository"
+        },
+        {
+          module: "developer/MMM-ServiceStatus",
+          position: "top_right",
+          header: "Services"
+        }
+      ]
     },
     {
-      pageClass: "dev-page3",
+      pageClass: "dev-launcher",
       modules: [
         {
           module: "developer/MMM-Launcher",
           position: "middle_center"
         }
       ]
-    },
-    {
-      pageClass: "dev-calendar",
-      modules: [
-        {
-          module: "developer/MMM-CompanyCalendar",
-          position: "fullscreen_above",
-          header: "Firmenkalender",
-          config: {
-            viewMode: "week",          // "week" | "month"
-            fetchInterval: 15 * 60 * 1000,
-            firstDayOfWeek: 1,
-            maxEventsPerDay: 5,
-            showLocation: true,
-            mirrorConfigId: 1,         // ID aus mm_mirror_configs (Fallback: employees-Array)
-            employees: [
-              // Beispiel-Einträge – ICS-URLs der Mitarbeiter hier eintragen:
-              // {
-              //   name: "Max Mustermann",
-              //   color: "#4a9eff",
-              //   url: "https://example.com/max.ics"
-              // },
-              // {
-              //   name: "Anna Schmidt",
-              //   color: "#ff7043",
-              //   url: "https://example.com/anna.ics"
-              // },
-            ]
-          }
-        }
-      ]
-    },
+    }
     // Weitere Developer-Seiten hier einfügen:
     // { pageClass: "dev-performance", modules: [ ... ] },
   ]
@@ -281,10 +268,10 @@ const PAGES = {
 // Seiten für den aktiven Modus zusammenstellen
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Developer-Modus: nur developer-Seiten (kein shared Haupt-Dashboard)
-// Alle anderen Modi: shared + moduspezifische Seiten
+// Developer sieht alles: shared + business + private + developer
+// Business/Private: shared + moduspezifische Seiten
 const activePages = USAGE_TYPE === "developer"
-  ? PAGES.developer
+  ? [...PAGES.shared, ...PAGES.business, ...PAGES.private, ...PAGES.developer]
   : [...PAGES.shared, ...PAGES[USAGE_TYPE]];
 
 // MMM-pages erwartet ein Array von Arrays der pageClasses je Seite
@@ -373,9 +360,7 @@ let config = {
       config: {
         modules: pagesMatrix,
         fixed: ["alert", "updatenotification", "MMM-KeyBindings", "MMM-Dictation"],
-        timings: USAGE_TYPE === "developer"
-          ? { default: 0 }
-          : { default: PAGE_TIMING_MS, 1: 60 * 1000 },
+        timings: { default: 0 },  // kein Auto-Blättern – nur Pfeiltasten
         animationTime: 800
       }
     },

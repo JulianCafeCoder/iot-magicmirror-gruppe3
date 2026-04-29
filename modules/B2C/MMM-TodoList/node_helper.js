@@ -16,12 +16,13 @@ const DB_CONFIG = {
 module.exports = NodeHelper.create({
 
   start() {
-    this.todosFile   = path.join(this.path, "todos.json");
-    this.pool        = null;
-    this.useDb       = false;
-    this.userId      = null;
-    this._dbReady    = false;
+    this.todosFile    = path.join(this.path, "todos.json");
+    this.pool         = null;
+    this.useDb        = false;
+    this.userId       = null;
+    this._dbReady     = false;
     this._pendingLoad = null;
+    Log.info(`${this.name}: node_helper gestartet – verbinde mit DB ${DB_CONFIG.host}…`);
     this._initDb();
   },
 
@@ -79,13 +80,16 @@ module.exports = NodeHelper.create({
             ORDER BY done ASC, priority ASC, created_at ASC`,
           [this.userId]
         );
+        Log.info(`${this.name}: ${res.rows.length} Todos aus DB geladen (user_id=${this.userId})`);
         this.sendSocketNotification("TODOS_LOADED", res.rows);
         return;
       } catch (err) {
-        Log.error(`${this.name}: Ladefehler – ${err.message}`);
+        Log.error(`${this.name}: DB-Ladefehler – ${err.message}`);
       }
     }
-    this.sendSocketNotification("TODOS_LOADED", this._readJson());
+    const todos = this._readJson();
+    Log.info(`${this.name}: ${todos.length} Todos aus todos.json geladen (Fallback)`);
+    this.sendSocketNotification("TODOS_LOADED", todos);
   },
 
   // ── TOGGLE done ────────────────────────────────────────────────────────────

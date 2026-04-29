@@ -58,6 +58,10 @@ Module.register("MMM-Dictation", {
 
   // ── Socket-Antworten vom node_helper ─────────────────────────────────────
   socketNotificationReceived(notification, payload) {
+    if (notification === "REQUEST_CONFIG") {
+      this.sendSocketNotification("SET_CONFIG", this.config);
+      return;
+    }
     if (notification !== "TRANSCRIPTION_RESULT") return;
 
     this._recording = false;

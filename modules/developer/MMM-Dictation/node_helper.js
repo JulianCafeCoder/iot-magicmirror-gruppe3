@@ -65,6 +65,7 @@ module.exports = NodeHelper.create({
 
   start() {
     Log.info("[MMM-Dictation] node_helper bereit");
+    this.sendSocketNotification("REQUEST_CONFIG");
   },
 
   socketNotificationReceived(notification, payload) {
@@ -122,11 +123,14 @@ module.exports = NodeHelper.create({
       return;
     }
 
+    // Curl parst Semikolons in -F als Feld-Trenner → nur den Basis-MIME-Typ übergeben
+    const baseType = (mimeType || "audio/webm").split(";")[0];
+
     execFile("curl", [
       "-s",
       ENDPOINTS_STT[provider] || ENDPOINTS_STT.groq,
       "-H", `Authorization: Bearer ${apiKey}`,
-      "-F", `file=@${tmpFile};type=${mimeType || "audio/webm"}`,
+      "-F", `file=@${tmpFile};type=${baseType}`,
       "-F", `model=${MODELS_STT[provider] || MODELS_STT.groq}`,
       "-F", `language=${lang || "de"}`,
     ], (err, stdout) => {

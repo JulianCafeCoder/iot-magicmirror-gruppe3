@@ -108,15 +108,6 @@ const PAGES = {
         },
       ]
     },
-    {
-      pageClass: "aurora-page",
-      modules: [
-        {
-          module: "shared/MMM-Aurora",
-          position: "fullscreen_below"
-        }
-      ]
-    }
   ],
 
   // ── Seiten nur für Nutzungsart "business" ────────────────────────────────

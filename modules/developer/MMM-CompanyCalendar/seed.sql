@@ -177,5 +177,123 @@ SELECT seed_event('anna@firma.de', 'kw17-fri-2', 'All-Hands Meeting',      '2026
 SELECT seed_event('tom@firma.de',  'kw17-fri-3', 'All-Hands Meeting',      '2026-04-25 10:00', '2026-04-25 11:30', FALSE, 'Großer Saal');
 
 
+-- ═════════════════════════════════════════════════════════════════════════════
+-- KW 20  (11. – 15. Mai 2026)
+-- ═════════════════════════════════════════════════════════════════════════════
+
+-- ── Montag 11.05. ────────────────────────────────────────────────────────────
+SELECT seed_event('max@firma.de',  'kw20-mon-1', 'Daily Standup',              '2026-05-11 09:00', '2026-05-11 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('anna@firma.de', 'kw20-mon-2', 'Daily Standup',              '2026-05-11 09:00', '2026-05-11 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('tom@firma.de',  'kw20-mon-3', 'Daily Standup',              '2026-05-11 09:00', '2026-05-11 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('max@firma.de',  'kw20-mon-4', 'Sprint Planning',            '2026-05-11 10:00', '2026-05-11 12:00', FALSE, 'Konferenzraum B');
+SELECT seed_event('anna@firma.de', 'kw20-mon-5', 'Sprint Planning',            '2026-05-11 10:00', '2026-05-11 12:00', FALSE, 'Konferenzraum B');
+SELECT seed_event('tom@firma.de',  'kw20-mon-6', 'Sprint Planning',            '2026-05-11 10:00', '2026-05-11 12:00', FALSE, 'Konferenzraum B');
+SELECT seed_event('anna@firma.de', 'kw20-mon-7', 'Onboarding: Lisa Müller',    '2026-05-11 13:00', '2026-05-11 15:00', FALSE, 'Besprechungsraum 1');
+SELECT seed_event('max@firma.de',  'kw20-mon-8', 'Partnermeeting NovaTech',    '2026-05-11 14:00', '2026-05-11 15:30', FALSE, 'Online');
+
+-- ── Dienstag 12.05. ──────────────────────────────────────────────────────────
+SELECT seed_event('max@firma.de',  'kw20-tue-1', 'Daily Standup',              '2026-05-12 09:00', '2026-05-12 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('anna@firma.de', 'kw20-tue-2', 'Daily Standup',              '2026-05-12 09:00', '2026-05-12 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('tom@firma.de',  'kw20-tue-3', 'Daily Standup',              '2026-05-12 09:00', '2026-05-12 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('tom@firma.de',  'kw20-tue-4', 'Datenbankoptimierung',       '2026-05-12 09:30', '2026-05-12 11:30', FALSE, 'Serverraum');
+SELECT seed_event('anna@firma.de', 'kw20-tue-5', 'UI-Review Projekt Nova',     '2026-05-12 10:00', '2026-05-12 11:30', FALSE, 'Konferenzraum B');
+SELECT seed_event('max@firma.de',  'kw20-tue-6', 'UI-Review Projekt Nova',     '2026-05-12 10:00', '2026-05-12 11:30', FALSE, 'Konferenzraum B');
+SELECT seed_event('max@firma.de',  'kw20-tue-7', '1:1 mit Anna',               '2026-05-12 14:00', '2026-05-12 14:30', FALSE, 'Besprechungsraum 1');
+SELECT seed_event('anna@firma.de', 'kw20-tue-8', '1:1 mit Max',                '2026-05-12 14:00', '2026-05-12 14:30', FALSE, 'Besprechungsraum 1');
+SELECT seed_event('tom@firma.de',  'kw20-tue-9', 'DevOps-Sync',                '2026-05-12 15:00', '2026-05-12 16:00', FALSE, 'Online');
+
+-- ── Mittwoch 13.05. ──────────────────────────────────────────────────────────
+SELECT seed_event('max@firma.de',  'kw20-wed-1', 'Daily Standup',              '2026-05-13 09:00', '2026-05-13 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('anna@firma.de', 'kw20-wed-2', 'Daily Standup',              '2026-05-13 09:00', '2026-05-13 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('tom@firma.de',  'kw20-wed-3', 'Daily Standup',              '2026-05-13 09:00', '2026-05-13 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('anna@firma.de', 'kw20-wed-4', 'Weiterbildung: Accessibility','2026-05-13 09:30', '2026-05-13 13:00', FALSE, 'Online');
+SELECT seed_event('max@firma.de',  'kw20-wed-5', 'Roadmap-Workshop Q3',        '2026-05-13 10:00', '2026-05-13 13:00', FALSE, 'Boardroom OG');
+SELECT seed_event('tom@firma.de',  'kw20-wed-6', 'Roadmap-Workshop Q3',        '2026-05-13 10:00', '2026-05-13 13:00', FALSE, 'Boardroom OG');
+SELECT seed_event('max@firma.de',  'kw20-wed-7', 'Investorengespräch',         '2026-05-13 15:00', '2026-05-13 16:30', FALSE, 'Boardroom OG');
+SELECT seed_event('tom@firma.de',  'kw20-wed-8', 'CI/CD Pipeline Review',      '2026-05-13 14:00', '2026-05-13 15:30', FALSE, 'Serverraum');
+
+-- ── Donnerstag 14.05. ────────────────────────────────────────────────────────
+SELECT seed_event('max@firma.de',  'kw20-thu-1', 'Daily Standup',              '2026-05-14 09:00', '2026-05-14 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('anna@firma.de', 'kw20-thu-2', 'Daily Standup',              '2026-05-14 09:00', '2026-05-14 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('tom@firma.de',  'kw20-thu-3', 'Daily Standup',              '2026-05-14 09:00', '2026-05-14 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('anna@firma.de', 'kw20-thu-4', 'Kundenpräsentation Beta',    '2026-05-14 10:00', '2026-05-14 12:00', FALSE, 'Showroom EG');
+SELECT seed_event('max@firma.de',  'kw20-thu-5', 'Kundenpräsentation Beta',    '2026-05-14 10:00', '2026-05-14 12:00', FALSE, 'Showroom EG');
+SELECT seed_event('tom@firma.de',  'kw20-thu-6', 'Deployment Staging',         '2026-05-14 10:00', '2026-05-14 11:00', FALSE, 'Remote');
+SELECT seed_event('max@firma.de',  'kw20-thu-7', 'Sales-Forecast Meeting',     '2026-05-14 14:00', '2026-05-14 15:00', FALSE, 'Konferenzraum B');
+SELECT seed_event('tom@firma.de',  'kw20-thu-8', 'Security Patch Review',      '2026-05-14 13:00', '2026-05-14 14:30', FALSE, 'Serverraum');
+SELECT seed_event('anna@firma.de', 'kw20-thu-9', 'Design-Handoff Nova',        '2026-05-14 15:00', '2026-05-14 16:00', FALSE, 'Konferenzraum B');
+
+-- ── Freitag 15.05. ───────────────────────────────────────────────────────────
+SELECT seed_event('max@firma.de',  'kw20-fri-1', 'Daily Standup',              '2026-05-15 09:00', '2026-05-15 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('anna@firma.de', 'kw20-fri-2', 'Daily Standup',              '2026-05-15 09:00', '2026-05-15 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('tom@firma.de',  'kw20-fri-3', 'Daily Standup',              '2026-05-15 09:00', '2026-05-15 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('max@firma.de',  'kw20-fri-4', 'Sprint Review',              '2026-05-15 10:00', '2026-05-15 11:30', FALSE, 'Konferenzraum B');
+SELECT seed_event('anna@firma.de', 'kw20-fri-5', 'Sprint Review',              '2026-05-15 10:00', '2026-05-15 11:30', FALSE, 'Konferenzraum B');
+SELECT seed_event('tom@firma.de',  'kw20-fri-6', 'Sprint Review',              '2026-05-15 10:00', '2026-05-15 11:30', FALSE, 'Konferenzraum B');
+SELECT seed_event('max@firma.de',  'kw20-fri-7', 'Sprint Retrospektive',       '2026-05-15 13:00', '2026-05-15 14:30', FALSE, 'Konferenzraum A');
+SELECT seed_event('anna@firma.de', 'kw20-fri-8', 'Sprint Retrospektive',       '2026-05-15 13:00', '2026-05-15 14:30', FALSE, 'Konferenzraum A');
+SELECT seed_event('tom@firma.de',  'kw20-fri-9', 'Sprint Retrospektive',       '2026-05-15 13:00', '2026-05-15 14:30', FALSE, 'Konferenzraum A');
+SELECT seed_event('anna@firma.de', 'kw20-fri-10','Freitags-Runde',             '2026-05-15 16:00', '2026-05-15 16:30', FALSE, 'Aufenthaltsraum');
+SELECT seed_event('max@firma.de',  'kw20-fri-11','Freitags-Runde',             '2026-05-15 16:00', '2026-05-15 16:30', FALSE, 'Aufenthaltsraum');
+SELECT seed_event('tom@firma.de',  'kw20-fri-12','Freitags-Runde',             '2026-05-15 16:00', '2026-05-15 16:30', FALSE, 'Aufenthaltsraum');
+
+
+-- ═════════════════════════════════════════════════════════════════════════════
+-- KW 21  (18. – 22. Mai 2026)
+-- ═════════════════════════════════════════════════════════════════════════════
+
+-- Urlaub Max (Mo–Mi)
+SELECT seed_event('max@firma.de',  'kw21-urlaub', 'Urlaub 🏔️',               '2026-05-18 00:00', '2026-05-21 00:00', TRUE,  'Berge');
+
+-- ── Montag 18.05. ────────────────────────────────────────────────────────────
+SELECT seed_event('anna@firma.de', 'kw21-mon-1', 'Daily Standup',              '2026-05-18 09:00', '2026-05-18 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('tom@firma.de',  'kw21-mon-2', 'Daily Standup',              '2026-05-18 09:00', '2026-05-18 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('anna@firma.de', 'kw21-mon-3', 'Sprint Planning',            '2026-05-18 10:00', '2026-05-18 12:00', FALSE, 'Konferenzraum B');
+SELECT seed_event('tom@firma.de',  'kw21-mon-4', 'Sprint Planning',            '2026-05-18 10:00', '2026-05-18 12:00', FALSE, 'Konferenzraum B');
+SELECT seed_event('tom@firma.de',  'kw21-mon-5', 'Infrastruktur-Planung',      '2026-05-18 14:00', '2026-05-18 16:00', FALSE, 'Serverraum');
+SELECT seed_event('anna@firma.de', 'kw21-mon-6', 'Brand-Workshop',             '2026-05-18 13:00', '2026-05-18 15:30', FALSE, 'Konferenzraum A');
+
+-- ── Dienstag 19.05. ──────────────────────────────────────────────────────────
+SELECT seed_event('anna@firma.de', 'kw21-tue-1', 'Daily Standup',              '2026-05-19 09:00', '2026-05-19 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('tom@firma.de',  'kw21-tue-2', 'Daily Standup',              '2026-05-19 09:00', '2026-05-19 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('anna@firma.de', 'kw21-tue-3', 'Nutzertests v2.0',           '2026-05-19 10:00', '2026-05-19 13:00', FALSE, 'Besprechungsraum 2');
+SELECT seed_event('tom@firma.de',  'kw21-tue-4', 'Backend-Refactoring',        '2026-05-19 09:30', '2026-05-19 12:00', FALSE, 'Serverraum');
+SELECT seed_event('tom@firma.de',  'kw21-tue-5', '1:1 mit Teamlead',           '2026-05-19 14:00', '2026-05-19 14:30', FALSE, 'Besprechungsraum 1');
+SELECT seed_event('anna@firma.de', 'kw21-tue-6', 'Figma Komponenten-Review',   '2026-05-19 14:30', '2026-05-19 16:00', FALSE, 'Online');
+
+-- ── Mittwoch 20.05. ──────────────────────────────────────────────────────────
+SELECT seed_event('anna@firma.de', 'kw21-wed-1', 'Daily Standup',              '2026-05-20 09:00', '2026-05-20 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('tom@firma.de',  'kw21-wed-2', 'Daily Standup',              '2026-05-20 09:00', '2026-05-20 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('tom@firma.de',  'kw21-wed-3', 'Release v2.1 Vorbereitung',  '2026-05-20 09:30', '2026-05-20 12:00', FALSE, 'Serverraum');
+SELECT seed_event('anna@firma.de', 'kw21-wed-4', 'Marketing-Sync',             '2026-05-20 10:00', '2026-05-20 11:00', FALSE, 'Konferenzraum B');
+SELECT seed_event('anna@firma.de', 'kw21-wed-5', 'Weiterbildung: Motion Design','2026-05-20 13:00', '2026-05-20 17:00', FALSE, 'Online');
+SELECT seed_event('tom@firma.de',  'kw21-wed-6', 'Deployment v2.1 Prod',       '2026-05-20 15:00', '2026-05-20 16:00', FALSE, 'Remote');
+
+-- ── Donnerstag 21.05. ────────────────────────────────────────────────────────
+SELECT seed_event('max@firma.de',  'kw21-thu-1', 'Daily Standup',              '2026-05-21 09:00', '2026-05-21 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('anna@firma.de', 'kw21-thu-2', 'Daily Standup',              '2026-05-21 09:00', '2026-05-21 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('tom@firma.de',  'kw21-thu-3', 'Daily Standup',              '2026-05-21 09:00', '2026-05-21 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('max@firma.de',  'kw21-thu-4', 'Nachbesprechung Urlaub',     '2026-05-21 10:00', '2026-05-21 10:30', FALSE, 'Besprechungsraum 1');
+SELECT seed_event('anna@firma.de', 'kw21-thu-5', 'Kundenfeedback-Session',     '2026-05-21 10:00', '2026-05-21 12:00', FALSE, 'Showroom EG');
+SELECT seed_event('max@firma.de',  'kw21-thu-6', 'Kundenfeedback-Session',     '2026-05-21 10:00', '2026-05-21 12:00', FALSE, 'Showroom EG');
+SELECT seed_event('tom@firma.de',  'kw21-thu-7', 'Post-Release Monitoring',    '2026-05-21 09:30', '2026-05-21 11:30', FALSE, 'Serverraum');
+SELECT seed_event('max@firma.de',  'kw21-thu-8', 'Vertriebsstrategie Q3',      '2026-05-21 14:00', '2026-05-21 15:30', FALSE, 'Boardroom OG');
+SELECT seed_event('anna@firma.de', 'kw21-thu-9', 'Vertriebsstrategie Q3',      '2026-05-21 14:00', '2026-05-21 15:30', FALSE, 'Boardroom OG');
+
+-- ── Freitag 22.05. ───────────────────────────────────────────────────────────
+SELECT seed_event('max@firma.de',  'kw21-fri-1', 'Daily Standup',              '2026-05-22 09:00', '2026-05-22 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('anna@firma.de', 'kw21-fri-2', 'Daily Standup',              '2026-05-22 09:00', '2026-05-22 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('tom@firma.de',  'kw21-fri-3', 'Daily Standup',              '2026-05-22 09:00', '2026-05-22 09:15', FALSE, 'Konferenzraum A');
+SELECT seed_event('max@firma.de',  'kw21-fri-4', 'Sprint Review',              '2026-05-22 10:00', '2026-05-22 11:30', FALSE, 'Konferenzraum B');
+SELECT seed_event('anna@firma.de', 'kw21-fri-5', 'Sprint Review',              '2026-05-22 10:00', '2026-05-22 11:30', FALSE, 'Konferenzraum B');
+SELECT seed_event('tom@firma.de',  'kw21-fri-6', 'Sprint Review',              '2026-05-22 10:00', '2026-05-22 11:30', FALSE, 'Konferenzraum B');
+SELECT seed_event('max@firma.de',  'kw21-fri-7', 'Sprint Retrospektive',       '2026-05-22 13:00', '2026-05-22 14:30', FALSE, 'Konferenzraum A');
+SELECT seed_event('anna@firma.de', 'kw21-fri-8', 'Sprint Retrospektive',       '2026-05-22 13:00', '2026-05-22 14:30', FALSE, 'Konferenzraum A');
+SELECT seed_event('tom@firma.de',  'kw21-fri-9', 'Sprint Retrospektive',       '2026-05-22 13:00', '2026-05-22 14:30', FALSE, 'Konferenzraum A');
+SELECT seed_event('max@firma.de',  'kw21-fri-10','Wochenabschluss-Runde',      '2026-05-22 16:00', '2026-05-22 16:30', FALSE, 'Aufenthaltsraum');
+SELECT seed_event('anna@firma.de', 'kw21-fri-11','Wochenabschluss-Runde',      '2026-05-22 16:00', '2026-05-22 16:30', FALSE, 'Aufenthaltsraum');
+SELECT seed_event('tom@firma.de',  'kw21-fri-12','Wochenabschluss-Runde',      '2026-05-22 16:00', '2026-05-22 16:30', FALSE, 'Aufenthaltsraum');
+
+
 -- Hilfsfunktion nach dem Seed wieder aufräumen
 DROP FUNCTION IF EXISTS seed_event(TEXT, TEXT, TEXT, TIMESTAMPTZ, TIMESTAMPTZ, BOOLEAN, TEXT);

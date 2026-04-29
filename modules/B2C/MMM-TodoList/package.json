@@ -1,0 +1,9 @@
+{
+  "name": "mmm-todolist",
+  "version": "1.0.0",
+  "description": "MagicMirror Todo-Liste mit PostgreSQL",
+  "main": "node_helper.js",
+  "dependencies": {
+    "pg": "^8.13.0"
+  }
+}

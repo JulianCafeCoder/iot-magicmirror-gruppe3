@@ -182,7 +182,10 @@ const PAGES = {
         {
           module: "B2C/MMM-TodoList",
           position: "top_left",
-          header: "To-Do Liste"
+          header: "To-Do Liste",
+          config: {
+            userId: 2   // ID aus mm_users (Home User)
+          }
         }
       ]
     }

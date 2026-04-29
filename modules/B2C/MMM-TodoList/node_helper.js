@@ -1,58 +1,152 @@
 const NodeHelper = require("node_helper");
-const Log = require("logger");
-const fs = require("fs");
-const path = require("path");
+const Log        = require("logger");
+const fs         = require("fs");
+const path       = require("path");
+
+const DB_CONFIG = {
+  host:                    process.env.PG_HOST || "10.93.131.37",
+  port:                    5432,
+  database:                "postgres",
+  user:                    "gruppe3",
+  password:                "gruppe3",
+  connectionTimeoutMillis: 5000,
+  max:                     3,
+};
 
 module.exports = NodeHelper.create({
+
   start() {
     this.todosFile = path.join(this.path, "todos.json");
-    Log.info(`${this.name}: node_helper started. Todos file: ${this.todosFile}`);
+    this.pool      = null;
+    this.useDb     = false;
+    this.userId    = null;
+    this._initDb();
   },
+
+  // ── PostgreSQL Pool ────────────────────────────────────────────────────────
+
+  async _initDb() {
+    try {
+      const { Pool } = require("pg");
+      this.pool = new Pool(DB_CONFIG);
+      const client = await this.pool.connect();
+      client.release();
+      this.useDb = true;
+      Log.info(`${this.name}: PostgreSQL verbunden`);
+    } catch (err) {
+      Log.warn(`${this.name}: PostgreSQL nicht erreichbar – nutze todos.json (${err.message})`);
+    }
+  },
+
+  // ── Notifications ──────────────────────────────────────────────────────────
 
   socketNotificationReceived(notification, payload) {
-    if (notification === "LOAD_TODOS") {
-      this.sendSocketNotification("TODOS_LOADED", this._readTodos());
-    }
-
-    if (notification === "TOGGLE_TODO") {
-      const todos = this._readTodos();
-      const todo = todos.find((t) => t.id === payload.id);
-      if (todo) {
-        todo.done = !todo.done;
-        this._writeTodos(todos);
-        this.sendSocketNotification("TODOS_LOADED", todos);
-      }
-    }
-
-    if (notification === "ADD_TODO") {
-      const todos = this._readTodos();
-      const newTodo = {
-        id: Date.now(),
-        title: payload.title,
-        category: payload.category || "Sonstiges",
-        done: false
-      };
-      todos.push(newTodo);
-      this._writeTodos(todos);
-      this.sendSocketNotification("TODOS_LOADED", todos);
-    }
+    if (notification === "LOAD_TODOS")   this._load(payload?.userId);
+    if (notification === "TOGGLE_TODO")  this._toggle(payload.id);
+    if (notification === "ADD_TODO")     this._add(payload);
+    if (notification === "DELETE_TODO")  this._delete(payload.id);
   },
 
-  _readTodos() {
+  // ── LOAD ───────────────────────────────────────────────────────────────────
+
+  async _load(userId) {
+    if (this.useDb) {
+      try {
+        this.userId = userId || null;
+        const res = await this.pool.query(
+          `SELECT id, title, category, done, priority
+             FROM todos
+            WHERE user_id = $1 OR $1 IS NULL
+            ORDER BY done ASC, priority ASC, created_at ASC`,
+          [this.userId]
+        );
+        this.sendSocketNotification("TODOS_LOADED", res.rows);
+        return;
+      } catch (err) {
+        Log.error(`${this.name}: Ladefehler – ${err.message}`);
+      }
+    }
+    this.sendSocketNotification("TODOS_LOADED", this._readJson());
+  },
+
+  // ── TOGGLE done ────────────────────────────────────────────────────────────
+
+  async _toggle(id) {
+    if (this.useDb) {
+      try {
+        await this.pool.query(
+          `UPDATE todos SET done = NOT done WHERE id = $1`,
+          [id]
+        );
+        await this._load(this.userId);
+        return;
+      } catch (err) {
+        Log.error(`${this.name}: Toggle-Fehler – ${err.message}`);
+      }
+    }
+    // JSON-Fallback
+    const todos = this._readJson();
+    const todo  = todos.find(t => t.id === id);
+    if (todo) { todo.done = !todo.done; this._writeJson(todos); }
+    this.sendSocketNotification("TODOS_LOADED", todos);
+  },
+
+  // ── ADD ────────────────────────────────────────────────────────────────────
+
+  async _add(payload) {
+    if (this.useDb) {
+      try {
+        await this.pool.query(
+          `INSERT INTO todos (user_id, title, category, priority)
+           VALUES ($1, $2, $3, $4)`,
+          [this.userId, payload.title, payload.category || "Sonstiges", payload.priority || 2]
+        );
+        await this._load(this.userId);
+        return;
+      } catch (err) {
+        Log.error(`${this.name}: Add-Fehler – ${err.message}`);
+      }
+    }
+    // JSON-Fallback
+    const todos   = this._readJson();
+    const newTodo = { id: Date.now(), title: payload.title, category: payload.category || "Sonstiges", done: false };
+    todos.push(newTodo);
+    this._writeJson(todos);
+    this.sendSocketNotification("TODOS_LOADED", todos);
+  },
+
+  // ── DELETE ─────────────────────────────────────────────────────────────────
+
+  async _delete(id) {
+    if (this.useDb) {
+      try {
+        await this.pool.query(`DELETE FROM todos WHERE id = $1`, [id]);
+        await this._load(this.userId);
+        return;
+      } catch (err) {
+        Log.error(`${this.name}: Delete-Fehler – ${err.message}`);
+      }
+    }
+    const todos = this._readJson().filter(t => t.id !== id);
+    this._writeJson(todos);
+    this.sendSocketNotification("TODOS_LOADED", todos);
+  },
+
+  // ── JSON-Fallback ──────────────────────────────────────────────────────────
+
+  _readJson() {
     try {
-      const raw = fs.readFileSync(this.todosFile, "utf-8");
-      return JSON.parse(raw).todos || [];
+      return JSON.parse(fs.readFileSync(this.todosFile, "utf-8")).todos || [];
     } catch (e) {
-      Log.error(`${this.name}: Could not read todos.json – ${e.message}`);
       return [];
     }
   },
 
-  _writeTodos(todos) {
+  _writeJson(todos) {
     try {
       fs.writeFileSync(this.todosFile, JSON.stringify({ todos }, null, 2), "utf-8");
     } catch (e) {
-      Log.error(`${this.name}: Could not write todos.json – ${e.message}`);
+      Log.error(`${this.name}: JSON-Schreibfehler – ${e.message}`);
     }
-  }
+  },
 });

@@ -17,7 +17,7 @@ Module.register("MMM-TodoList", {
 
   start() {
     Log.info(`${this.name} started.`);
-    this.sendSocketNotification("LOAD_TODOS");
+    this.sendSocketNotification("LOAD_TODOS", { userId: this.config.userId });
     this._startSwitchTimer();
   },
 

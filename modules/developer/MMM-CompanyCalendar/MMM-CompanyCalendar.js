@@ -45,7 +45,20 @@ Module.register("MMM-CompanyCalendar", {
     const legend = document.createElement("div");
     legend.className = "cc-legend";
 
-    for (const emp of (this.config.employees || [])) {
+    // Mitarbeiter aus Events ableiten (DB-Quelle), Fallback auf config.employees
+    const fromEvents = [];
+    const seen = new Set();
+    for (const ev of this.events) {
+      if (!seen.has(ev.employee)) {
+        seen.add(ev.employee);
+        fromEvents.push({ name: ev.employee, color: ev.color });
+      }
+    }
+    const employees = fromEvents.length > 0
+      ? fromEvents
+      : (this.config.employees || []);
+
+    for (const emp of employees) {
       const item = document.createElement("span");
       item.className = "cc-legend-item";
       item.innerHTML =

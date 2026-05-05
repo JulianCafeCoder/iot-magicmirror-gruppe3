@@ -144,6 +144,31 @@ const PAGES = {
           }
         }
       ]
+    },
+    {
+      pageClass: "biz-tools",
+      modules: [
+        {
+          module: "developer/MMM-Timer",
+          position: "top_left",
+          header: "Timer"
+        },
+        {
+          module: "developer/MMM-Stopwatch",
+          position: "top_right",
+          header: "Stoppuhr"
+        },
+        {
+          module: "developer/MMM-Dice",
+          position: "bottom_left",
+          header: "Würfel"
+        },
+        {
+          module: "developer/MMM-Notes",
+          position: "bottom_right",
+          header: "Notizen"
+        }
+      ]
     }
     // Weitere Business-Seiten hier einfügen:
     // { pageClass: "biz-analytics", modules: [ ... ] },
@@ -188,6 +213,31 @@ const PAGES = {
           module: "developer/MMM-EnergyDashboard",
           position: "top_right",
           header: "Energie"
+        }
+      ]
+    },
+    {
+      pageClass: "priv-tools",
+      modules: [
+        {
+          module: "developer/MMM-Timer",
+          position: "top_left",
+          header: "Timer"
+        },
+        {
+          module: "developer/MMM-Stopwatch",
+          position: "top_right",
+          header: "Stoppuhr"
+        },
+        {
+          module: "developer/MMM-Dice",
+          position: "bottom_left",
+          header: "Würfel"
+        },
+        {
+          module: "developer/MMM-Notes",
+          position: "bottom_right",
+          header: "Notizen"
         }
       ]
     }
@@ -300,10 +350,14 @@ let config = {
         // Ziffern 1–8 müssen explizit zur Abhörliste hinzugefügt werden
         // Alle Tasten, die als KEYPRESS weitergeleitet werden sollen
         handleKeys: [
-          "1", "2", "3", "4", "5", "6", "7", "8",
-          "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown",
-          "Enter", "Escape", " ", "Delete", "Backspace", "r", "R",
-          "."
+          "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
+          "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Tab",
+          "Enter", "Escape", " ", "Delete", "Backspace",
+          "a","b","c","d","e","f","g","h","i","j","k","l","m",
+          "n","o","p","q","r","s","t","u","v","w","x","y","z",
+          "A","B","C","D","E","F","G","H","I","J","K","L","M",
+          "N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
+          ".", ",", "-", "!", "?"
         ],
         actions: [
           // Seiten blättern nur im DEFAULT-Modus (nicht im LAUNCHER/MODULE-Modus)

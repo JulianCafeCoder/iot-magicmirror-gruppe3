@@ -158,3 +158,68 @@
   color: rgba(255, 255, 255, 0.3);
   padding-top: 4px;
 }
+
+/* ── Fokussierter Eintrag (interaktiver Modus) ────────────────────────── */
+
+.todo-item--focused {
+  background: rgba(108, 142, 191, 0.18) !important;
+  border-left-color: #8aafd4 !important;
+  box-shadow: 0 0 0 1px rgba(108, 142, 191, 0.35);
+}
+
+.todo-item--focused .todo-item-text {
+  color: #fff;
+}
+
+/* ── Neues Todo eingeben ──────────────────────────────────────────────── */
+
+.todo-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(108, 142, 191, 0.12);
+  border-radius: 7px;
+  padding: 8px 10px;
+  border-left: 3px solid #8aafd4;
+  margin-bottom: 5px;
+}
+
+.todo-input-icon {
+  font-size: 12px;
+  color: #8aafd4;
+  flex-shrink: 0;
+}
+
+.todo-input-text {
+  font-size: 13px;
+  color: #fff;
+  flex: 1;
+  min-height: 1em;
+}
+
+.todo-cursor {
+  display: inline-block;
+  color: #8aafd4;
+  animation: todoBlink 0.8s step-end infinite;
+  margin-left: 1px;
+}
+
+@keyframes todoBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ── Tastatur-Hilfe ───────────────────────────────────────────────────── */
+
+.todo-hint {
+  margin-top: 8px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.35);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.todo-hint--idle {
+  color: rgba(255, 255, 255, 0.18);
+  font-style: italic;
+}

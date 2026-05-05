@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap');
+
+/* ── Page Indicator: Punkte + aktiver Strich ─────────────────────────────── */
+
+.MMM-page-indicator .circle-wrapper {
+  margin: 0 5px;
+}
+
+.MMM-page-indicator .indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 0 !important;
+  padding: 0 !important;
+  transition: width 400ms ease, border-radius 400ms ease, background 400ms ease, box-shadow 400ms ease;
+  vertical-align: middle;
+}
+
+.MMM-page-indicator .indicator::before {
+  display: none;
+}
+
+.MMM-page-indicator .indicator.active-page {
+  width: 24px;
+  border-radius: 4px;
+  background: #c9a14a;
+  box-shadow: 0 0 12px rgba(201, 161, 74, 0.65);
+}
+
+body.light-mode .MMM-page-indicator .indicator {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+body.light-mode .MMM-page-indicator .indicator.active-page {
+  background: #c9a14a;
+  box-shadow: 0 0 10px rgba(201, 161, 74, 0.5);
+}
+
+/* ── Light Mode ──────────────────────────────────────────────────────────── */
+
+body.light-mode {
+  --color-background:   #f0f0f0;
+  --color-text:         #444;
+  --color-text-dimmed:  #888;
+  --color-text-bright:  #111;
+}
+
+body.light-mode,
+body.light-mode html {
+  background: var(--color-background);
+}
+
+/* ── Modul-Karten & Trennlinien ──────────────────────────────────────────── */
+
+/* Scrum Board */
+body.light-mode .scrum-column {
+  background: rgba(0, 0, 0, 0.04);
+}
+body.light-mode .scrum-column-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+body.light-mode .scrum-badge {
+  background: rgba(0, 0, 0, 0.1);
+}
+body.light-mode .scrum-card {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--color-text);
+}
+
+/* To-Do Liste */
+body.light-mode .todo-tab {
+  color: rgba(0, 0, 0, 0.45);
+}
+body.light-mode .todo-item {
+  background: rgba(0, 0, 0, 0.04);
+}
+body.light-mode .todo-checkbox {
+  background: rgba(0, 0, 0, 0.08);
+}
+body.light-mode .todo-meta {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+/* Stundenplan */
+body.light-mode .stundenplan td,
+body.light-mode .stundenplan th {
+  border-right:  1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.7);
+}
+body.light-mode .stundenplan thead th {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.18);
+  background: rgba(0, 0, 0, 0.03);
+}
+body.light-mode .stundenplan tbody tr:nth-child(odd) {
+  background: rgba(0, 0, 0, 0.02);
+}
+body.light-mode .stundenplan .sp-time {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+/* Firmenkalender */
+body.light-mode .cc-day {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+body.light-mode .cc-today {
+  background: rgba(74, 158, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(74, 158, 255, 0.25);
+}
+body.light-mode .cc-week-nav {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Lichtsteuerung */
+body.light-mode .ls-card {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+body.light-mode .ls-key {
+  color: rgba(0, 0, 0, 0.35);
+}
+body.light-mode .ls-name {
+  color: rgba(0, 0, 0, 0.6);
+}
+body.light-mode .ls-badge {
+  background: rgba(0, 0, 0, 0.06);
+  color: rgba(0, 0, 0, 0.35);
+}
+
+/* Service Status */
+body.light-mode .svc-label {
+  color: rgba(0, 0, 0, 0.5);
+}
+body.light-mode .svc-card {
+  background: rgba(0, 0, 0, 0.04);
+}
+body.light-mode .svc-name {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+/* Energy Dashboard */
+body.light-mode .ed-badge-ring {
+  background: rgba(240, 240, 240, 0.9);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+body.light-mode .ed-badge-solar .ed-badge-ring {
+  border-color: rgba(255, 214, 51, 0.6);
+  background: rgba(255, 214, 51, 0.08);
+}
+body.light-mode .ed-badge-house .ed-badge-ring {
+  border-color: rgba(90, 173, 255, 0.5);
+  background: rgba(90, 173, 255, 0.08);
+}
+body.light-mode .ed-value {
+  color: #111;
+}
+body.light-mode .ed-label {
+  color: rgba(0, 0, 0, 0.5);
+}
+body.light-mode .ed-flow-row {
+  color: rgba(0, 0, 0, 0.55);
+}
+body.light-mode .ed-row {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}

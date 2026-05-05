@@ -30,4 +30,9 @@ module.exports = {
   // Wie lange jede Seite angezeigt wird (Millisekunden)
   PAGE_TIMING_MS: 15000,
 
+  // ── Anzeigemodus ──────────────────────────────────────────────────────────
+  // "dark"   →  dunkler Hintergrund (Standard, ideal für Spiegel)
+  // "light"  →  heller Hintergrund (ideal für Monitore / Tageslicht)
+  DISPLAY_MODE: "dark",
+
 };

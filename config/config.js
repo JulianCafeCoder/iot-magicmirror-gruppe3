@@ -24,8 +24,9 @@ const LOCATION       = profile.LOCATION      ?? { lat: 48.1351, lon: 11.5820, na
 const PAGE_TIMING_MS = profile.PAGE_TIMING_MS ?? 15000;
 const OPENAI_API_KEY = profile.OPENAI_API_KEY ?? "";
 const GROQ_API_KEY   = profile.GROQ_API_KEY   ?? "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";
+const DISPLAY_MODE   = profile.DISPLAY_MODE   ?? "dark";  // "dark" | "light"
 
-console.log(`[MagicMirror] ▶ Modus: ${USAGE_TYPE} | Ort: ${LOCATION.name} | Timing: ${PAGE_TIMING_MS}ms`);
+console.log(`[MagicMirror] ▶ Modus: ${USAGE_TYPE} | Ort: ${LOCATION.name} | Timing: ${PAGE_TIMING_MS}ms | Theme: ${DISPLAY_MODE}`);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Seitendefinitionen pro Nutzungsart
@@ -160,6 +161,13 @@ const PAGES = {
           config: {
             userId: 2
           }
+        },
+        {
+          module: "B2C/MMM-Stundenplan",
+          position: "top_right",
+          config: {
+            klasse: "11BE13"
+          }
         }
       ]
     },
@@ -266,6 +274,12 @@ let config = {
     { module: "alert" },
     { module: "updatenotification", position: "top_bar" },
 
+    // ── Theme (light/dark – gesteuert über DISPLAY_MODE in profile.js) ────
+    {
+      module: "MMM-Theme",
+      config: { mode: DISPLAY_MODE }
+    },
+
     // ── Globaler Diktierdienst (MediaRecorder + Whisper API) ─────────────
     // provider: "groq" (kostenlos, console.groq.com) | "openai" ($0.006/min)
     {
@@ -315,9 +329,21 @@ let config = {
       module: "MMM-pages",
       config: {
         modules: pagesMatrix,
-        fixed: ["alert", "updatenotification", "MMM-KeyBindings", "MMM-Dictation"],
+        fixed: ["alert", "updatenotification", "MMM-KeyBindings", "MMM-Dictation", "MMM-page-indicator", "MMM-Theme"],
         timings: { default: 0 },  // kein Auto-Blättern – nur Pfeiltasten
         animationTime: 800
+      }
+    },
+
+    // ── Seiten-Indikator (Punkte am unteren Rand) ─────────────────────────
+    {
+      module: "MMM-page-indicator",
+      position: "bottom_bar",
+      config: {
+        pages: activePages.length,
+        activeBright: true,
+        inactiveDimmed: true,
+        inactiveHollow: true
       }
     },
 

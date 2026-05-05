@@ -1,0 +1,181 @@
+.rezept-wrapper {
+  width: 100%;
+}
+
+.rezept-header {
+  font-size: 1.3em;
+  font-weight: 700;
+  margin-bottom: 1em;
+  text-align: right;
+}
+
+.rezept-loading,
+.rezept-empty {
+  text-align: center;
+  color: #aaa;
+  padding: 2em 0;
+}
+
+.rezept-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.rezept-top-row,
+.rezept-bottom-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+
+.rezept-top-row {
+  justify-content: flex-end;
+}
+
+.rezept-list-panel {
+  flex: 0 0 50%;
+  max-width: 30%;
+  min-width: 320px;
+}
+
+.rezept-bottom-row {
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.rezept-info-panel {
+  flex: 1 1 48%;
+  min-width: 220px;
+  max-width: 48%;
+  border: 1px solid rgb(255 255 255 / 12%);
+  background: rgb(255 255 255 / 5%);
+  padding: 0.75em 1em;
+  border-radius: 10px;
+  margin-bottom: 1em;
+}
+
+.rezept-info-description,
+.rezept-info-steps {
+  font-size: 0.85em;
+  color: #d2d2d2;
+  line-height: 1.5;
+  margin-bottom: 0.4em;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.rezept-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.rezept-item {
+  border-left: 4px solid #ffb300;
+  padding: 1em 1.2em;
+  background: rgb(255 255 255 / 8%);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 4%);
+}
+
+.rezept-title {
+  font-weight: 700;
+  font-size: 1.05em;
+  color: #fff;
+  margin-bottom: 0.5em;
+}
+
+.rezept-description,
+.rezept-category {
+  font-size: 0.88em;
+  color: #d8d8d8;
+  line-height: 1.4;
+  margin-bottom: 0.5em;
+}
+
+.rezept-category {
+  font-style: italic;
+}
+
+.rezept-ingredients {
+  margin-top: 0.8em;
+}
+
+.rezept-ingredients-title,
+.rezept-instructions-title {
+  font-size: 0.9em;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  color: #ffd05b;
+}
+
+.rezept-ingredient-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rezept-ingredient-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0.25em 0;
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
+}
+
+.rezept-ingredient-item:last-child {
+  border-bottom: none;
+}
+
+.rezept-ingredient-name {
+  flex: 1 1 auto;
+  color: #f5f5f5;
+}
+
+.rezept-ingredient-amount,
+.rezept-ingredient-note {
+  flex: 0 0 auto;
+  color: #c7c7c7;
+  margin-left: 0.8em;
+}
+
+.rezept-ingredient-note {
+  font-size: 0.82em;
+  color: #9ca3af;
+}
+
+.rezept-info-name {
+  font-size: 1em;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  color: #fff;
+}
+
+.rezept-info-steps strong {
+  color: #ffd05b;
+}
+
+.rezept-info-description {
+  white-space: pre-wrap;
+}
+
+.rezept-instructions {
+  margin-top: 0.9em;
+  font-size: 0.86em;
+  color: #d0d0d0;
+  line-height: 1.5;
+}
+
+.rezept-instructions-text {
+  margin-top: 0.25em;
+}
+
+.rezept-more {
+  text-align: center;
+  color: #999;
+  font-size: 0.9em;
+  margin-top: 1em;
+  font-style: italic;
+}

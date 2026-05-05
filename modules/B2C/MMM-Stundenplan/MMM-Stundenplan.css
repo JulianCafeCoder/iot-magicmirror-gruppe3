@@ -1,0 +1,218 @@
+/* ==============================
+   MMM-Stundenplan — Cards · Glow Design
+   fontScale=1.6 · glow=2.5 · radius=18 · colGap=18
+   Row height calculated dynamically in JS from window.innerHeight
+   ============================== */
+
+@keyframes sp-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* Outer module region */
+.module.MMM-Stundenplan {
+  width: 65vw;
+  overflow: visible;
+}
+
+/* Main wrapper — height set by JS: window.innerHeight - mmHeader */
+.sp-wrap {
+  width: 100%;
+  background: #000;
+  color: #fff;
+  font-family: 'Roboto Condensed', Roboto, sans-serif;
+  padding: 18px 48px 26px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.sp-loading {
+  font-size: 18px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+  padding: 40px 0;
+}
+
+/* ── Grid — column-gap 18px; row-gap + gridTemplateRows set by JS ────────── */
+
+.sp-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 88px repeat(5, 1fr);
+  column-gap: 18px;
+}
+
+/* ── Day headers ─────────────────────────────────────────────────────────── */
+
+.sp-day-head {
+  font-size: clamp(12px, 1.3vw, 19px);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 400;
+  padding: 0 0 4px 6px;
+  align-self: end;
+}
+
+.sp-day-head.sp-day-today {
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ── Time column ─────────────────────────────────────────────────────────── */
+
+.sp-time-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  font-size: clamp(10px, 1.1vw, 16px);
+  font-family: 'JetBrains Mono', 'Roboto Mono', 'Courier New', monospace;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.28);
+  line-height: 1.3;
+  padding-right: 4px;
+}
+
+.sp-time-start,
+.sp-time-end {
+  display: block;
+}
+
+.sp-time-now .sp-time-start,
+.sp-time-now .sp-time-end {
+  color: #c9a14a;
+}
+
+/* ── Cards ───────────────────────────────────────────────────────────────── */
+
+.sp-card {
+  position: relative;
+  border-radius: 18px;
+  background: linear-gradient(
+    135deg,
+    oklch(0.28 0.08 var(--hue) / 0.35),
+    oklch(0.18 0.05 var(--hue) / 0.15)
+  );
+  border: 1px solid oklch(0.6 0.15 var(--hue) / 0.35);
+  padding: 8px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 0;
+  box-shadow: 0 0 30px oklch(0.65 0.18 var(--hue) / 0.85);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.sp-card--empty {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: none;
+}
+
+.sp-card--dim {
+  opacity: 0.55;
+}
+
+.sp-card--now {
+  box-shadow:
+    0 0 60px oklch(0.65 0.18 var(--hue) / 0.9),
+    inset 0 0 0 1px oklch(0.85 0.2 var(--hue) / 0.6);
+  transform: scale(1.01);
+  z-index: 1;
+}
+
+/* ── Subject name ────────────────────────────────────────────────────────── */
+
+/* Fach — oben rechts */
+.sp-fach {
+  display: block;
+  font-size: clamp(12px, 1.5vw, 22px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: oklch(0.95 0.05 var(--hue));
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: right;
+  align-self: flex-end;
+}
+
+.sp-fach--small {
+  font-size: clamp(11px, 1.2vw, 18px);
+  text-align: right;
+}
+
+/* ── Room badge — unten links ────────────────────────────────────────────── */
+
+.sp-room {
+  display: inline-block;
+  font-size: clamp(9px, 0.9vw, 13px);
+  font-family: 'JetBrains Mono', 'Roboto Mono', monospace;
+  letter-spacing: 0.06em;
+  color: oklch(0.7 0.05 var(--hue) / 0.85);
+  border: 1px solid oklch(0.5 0.08 var(--hue) / 0.3);
+  border-radius: 6px;
+  padding: 1px 7px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  align-self: flex-start;
+}
+
+/* ── Pulsing dot ─────────────────────────────────────────────────────────── */
+
+.sp-now-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: oklch(0.85 0.2 var(--hue));
+  box-shadow: 0 0 20px oklch(0.85 0.2 var(--hue));
+  animation: sp-pulse 1.6s ease-in-out infinite;
+}
+
+/* ── Multiple entries (split groups) — Raum links, Fach rechts ───────────── */
+
+.sp-entry-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 6px;
+}
+
+/* In groups: fach right, width auto (overrides width:100% from .sp-fach) */
+.sp-entry-group .sp-fach--small {
+  width: auto;
+  text-align: right;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+/* In groups: room left */
+.sp-entry-group .sp-room {
+  width: auto;
+  align-self: center;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.sp-entry-divider {
+  height: 1px;
+  background: oklch(0.5 0.05 var(--hue) / 0.3);
+  margin: 2px 0;
+  width: 100%;
+}

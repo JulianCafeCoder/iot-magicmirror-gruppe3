@@ -207,3 +207,107 @@
   stroke: #f0a500;
   stroke-width: 2;
 }
+
+/* ---- Interactive cursor ---- */
+
+.scrum-card--cursor {
+  outline: 2px solid rgba(255, 255, 255, 0.55);
+  outline-offset: 2px;
+  background: rgba(255, 255, 255, 0.11);
+}
+
+/* ---- New-card form ---- */
+
+.scrum-form {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scrum-form-header {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: rgba(255, 255, 255, 0.55);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding-bottom: 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.scrum-form-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.scrum-form-row--active {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.scrum-form-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.38);
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+.scrum-form-row--active .scrum-form-label {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.scrum-form-value {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.88);
+  flex: 1;
+  min-height: 1.3em;
+}
+
+.scrum-form-placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.scrum-form-submit-hint {
+  font-size: 10px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-top: 8px;
+  margin-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ---- Keyboard hints bar ---- */
+
+.scrum-hints {
+  font-size: 9px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.22);
+  letter-spacing: 0.04em;
+  padding-top: 4px;
+}
+
+/* ---- Loading / empty states ---- */
+
+.scrum-loading,
+.scrum-burndown-empty {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.38);
+  text-align: center;
+  padding: 24px 0;
+}

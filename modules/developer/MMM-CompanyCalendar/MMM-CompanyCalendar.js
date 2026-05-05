@@ -33,10 +33,23 @@ Module.register("MMM-CompanyCalendar", {
       return wrap;
     }
 
+    wrap.appendChild(this._buildHeader());
     wrap.appendChild(this._buildLegend());
     wrap.appendChild(this._buildDowHeader());
     wrap.appendChild(this._buildFourWeeks());
     return wrap;
+  },
+
+  // ── Section header ────────────────────────────────────────────────────────
+
+  _buildHeader() {
+    const kw = this._isoWeek(new Date());
+    const header = document.createElement("div");
+    header.className = "cc-header";
+    header.innerHTML =
+      `<span class="cc-header-dot"></span>`
+      + `<span>Kalender &nbsp;·&nbsp; KW ${kw}</span>`;
+    return header;
   },
 
   // ── Legend ────────────────────────────────────────────────────────────────
@@ -127,6 +140,8 @@ Module.register("MMM-CompanyCalendar", {
     cell.className = "cc-day-cell";
     const isToday = this._isSameDay(day, new Date());
     if (isToday) cell.classList.add("cc-today");
+    const dow = day.getDay();
+    if (dow === 0 || dow === 6) cell.classList.add("cc-weekend");
 
     const dateLabel = document.createElement("div");
     dateLabel.className = "cc-date-label";

@@ -1,7 +1,7 @@
 Module.register("MMM-Dice", {
   defaults: {},
 
-  _active:  false,
+  _active:  true,
   _sides:   6,
   _value:   null,
   _rolling: false,
@@ -28,6 +28,7 @@ Module.register("MMM-Dice", {
   },
 
   notificationReceived(notification, payload) {
+    if (notification === "MODULE_DOM_CREATED") { this._render(); return; }
     if (notification === "MODULE_ACTIVATED") {
       this._active = (payload.id === this.name);
       this._render();

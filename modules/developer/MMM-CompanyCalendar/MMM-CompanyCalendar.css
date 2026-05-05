@@ -3,19 +3,45 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100vh;
-  padding: 6px 8px 4px;
+  height: 100%;
+  padding: 0;
   box-sizing: border-box;
-  color: #eee;
-  font-family: inherit;
-  gap: 4px;
+  color: #f5f4ee;
+  font-family: 'Roboto Condensed', Roboto, sans-serif;
+  gap: 0;
 }
 
 .cc-loading {
   text-align: center;
-  opacity: 0.5;
+  color: #666;
   padding: 40px;
-  font-size: 0.9em;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* ── Section header (scene-label style) ──────────────────────────────────── */
+.cc-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #666;
+  padding-bottom: 12px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+
+.cc-header-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c9a14a;
+  box-shadow: 0 0 8px #c9a14a;
+  flex-shrink: 0;
 }
 
 /* ── Legend ──────────────────────────────────────────────────────────────── */
@@ -23,45 +49,47 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  padding: 5px 4px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 10px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
   flex-shrink: 0;
 }
 
 .cc-legend-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
 }
 
 .cc-legend-dot {
-  width: 12px;
-  height: 12px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
 .cc-legend-name {
-  font-size: 0.8em;
-  font-weight: 600;
-  opacity: 0.9;
-  letter-spacing: 0.02em;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #999;
 }
 
 /* ── Day-of-week header ──────────────────────────────────────────────────── */
 .cc-dow-row {
   display: grid;
-  grid-template-columns: 42px repeat(7, 1fr);
-  gap: 3px;
+  grid-template-columns: 36px repeat(7, 1fr);
+  gap: 4px;
   flex-shrink: 0;
+  margin-bottom: 5px;
 }
 
 .cc-dow-cell {
   text-align: center;
-  font-size: 0.65em;
+  font-size: 11px;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  opacity: 0.45;
+  color: #555;
   padding: 2px 0;
 }
 
@@ -71,14 +99,14 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  gap: 3px;
+  gap: 4px;
 }
 
 /* ── Week row ────────────────────────────────────────────────────────────── */
 .cc-week-row {
   display: grid;
-  grid-template-columns: 42px repeat(7, 1fr);
-  gap: 3px;
+  grid-template-columns: 36px repeat(7, 1fr);
+  gap: 4px;
   flex: 1;
   min-height: 0;
 }
@@ -88,10 +116,10 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 6px;
-  font-size: 0.6em;
-  opacity: 0.35;
-  letter-spacing: 0.04em;
+  padding-top: 8px;
+  font-size: 10px;
+  color: #4a4a45;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
@@ -100,45 +128,57 @@
 
 /* ── Day cell ────────────────────────────────────────────────────────────── */
 .cc-day-cell {
-  background: rgba(255,255,255,0.04);
-  border-radius: 5px;
-  padding: 4px 4px 3px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 4px;
+  padding: 5px 5px 3px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   overflow: hidden;
   min-height: 0;
 }
 
 .cc-day-cell.cc-today {
-  background: rgba(74,158,255,0.1);
-  box-shadow: inset 0 0 0 1px rgba(74,158,255,0.3);
+  border-color: rgba(201,161,74,0.5);
+  background: rgba(201,161,74,0.06);
+}
+
+/* Weekend cells are slightly dimmer */
+.cc-day-cell.cc-weekend {
+  border-color: rgba(255,255,255,0.04);
 }
 
 /* ── Date label ──────────────────────────────────────────────────────────── */
 .cc-date-label {
-  font-size: 0.8em;
-  font-weight: 600;
-  opacity: 0.55;
+  font-size: 11px;
+  font-weight: 700;
+  color: #555;
   text-align: right;
   line-height: 1.2;
   flex-shrink: 0;
 }
 
+.cc-day-cell.cc-today .cc-date-label {
+  color: #c9a14a;
+}
+
+/* Today badge: gold circle */
 .cc-today-badge {
-  background: #4a9eff;
-  color: #fff;
-  border-radius: 50%;
-  width: 1.6em;
-  height: 1.6em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9em;
-  opacity: 1;
+  width: 18px;
+  height: 18px;
+  background: #c9a14a;
+  color: #07080c;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
 }
 
-/* ── All-day banner (Urlaub, Feiertag) ──────────────────────────────────── */
+/* ── All-day banner ──────────────────────────────────────────────────────── */
 .cc-allday-banner {
   border: 1px solid transparent;
   border-radius: 3px;
@@ -150,26 +190,27 @@
 }
 
 .cc-allday-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
   flex-shrink: 0;
 }
 
 .cc-allday-title {
-  font-size: 0.65em;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.04em;
 }
 
 /* ── Event chip ──────────────────────────────────────────────────────────── */
 .cc-event {
-  border-left: 3px solid transparent;
+  border-left: 2px solid transparent;
   border-radius: 0 3px 3px 0;
-  padding: 1px 4px;
+  padding: 2px 4px;
   display: flex;
   align-items: baseline;
   gap: 4px;
@@ -178,14 +219,17 @@
 }
 
 .cc-ev-time {
-  font-size: 0.58em;
-  opacity: 0.6;
+  font-size: 9px;
+  color: #555;
   flex-shrink: 0;
   white-space: nowrap;
+  letter-spacing: 0.05em;
 }
 
 .cc-ev-title {
-  font-size: 0.65em;
+  font-size: 11px;
+  color: #fff;
+  font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -193,19 +237,21 @@
 }
 
 .cc-ev-loc {
-  font-size: 0.58em;
-  opacity: 0.45;
+  font-size: 9px;
+  color: #555;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   flex-shrink: 0;
+  letter-spacing: 0.05em;
 }
 
 /* ── Overflow indicator ──────────────────────────────────────────────────── */
 .cc-more {
-  font-size: 0.58em;
-  opacity: 0.4;
+  font-size: 9px;
+  color: #4a4a45;
   text-align: right;
   padding: 0 2px;
   flex-shrink: 0;
+  letter-spacing: 0.1em;
 }

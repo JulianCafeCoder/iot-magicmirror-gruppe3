@@ -1,0 +1,19 @@
+{
+  "sprint": {
+    "id": 1,
+    "name": "Sprint 1",
+    "start_date": "2026-04-28",
+    "end_date": "2026-05-08"
+  },
+  "cards": [
+    { "id": 1, "title": "Repository einrichten",       "story_points": 3, "assignee": "Alle",   "status": "done", "completed_at": "2026-04-29T10:00:00.000Z", "created_at": "2026-04-28T08:00:00.000Z" },
+    { "id": 2, "title": "B2B und B2C trennen",          "story_points": 2, "assignee": "Julian", "status": "done", "completed_at": "2026-04-30T14:00:00.000Z", "created_at": "2026-04-28T08:00:00.000Z" },
+    { "id": 3, "title": "Rasberry Pi einrichten",       "story_points": 3, "assignee": "Alle",   "status": "done", "completed_at": "2026-04-28T16:00:00.000Z", "created_at": "2026-04-28T08:00:00.000Z" },
+    { "id": 4, "title": "Magic Mirror initial Screen",  "story_points": 2, "assignee": "Alle",   "status": "done", "completed_at": "2026-04-29T09:00:00.000Z", "created_at": "2026-04-28T08:00:00.000Z" },
+    { "id": 5, "title": "Lokale Umgebung erstellen",    "story_points": 5, "assignee": "Julia",  "status": "done", "completed_at": "2026-04-30T11:00:00.000Z", "created_at": "2026-04-28T08:00:00.000Z" },
+    { "id": 6, "title": "Flyer",                        "story_points": 8, "assignee": "Alle",   "status": "busy", "completed_at": null, "created_at": "2026-04-28T08:00:00.000Z" },
+    { "id": 7, "title": "Rauchen",                      "story_points": 5, "assignee": "Alle",   "status": "busy", "completed_at": null, "created_at": "2026-04-28T08:00:00.000Z" },
+    { "id": 8, "title": "Burn Down Chart",              "story_points": 5, "assignee": "Julian", "status": "busy", "completed_at": null, "created_at": "2026-04-28T08:00:00.000Z" },
+    { "id": 9, "title": "To do Liste",                  "story_points": 5, "assignee": "Julian", "status": "todo", "completed_at": null, "created_at": "2026-04-28T08:00:00.000Z" }
+  ]
+}

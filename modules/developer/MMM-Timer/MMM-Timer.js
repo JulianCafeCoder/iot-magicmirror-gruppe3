@@ -1,7 +1,7 @@
 Module.register("MMM-Timer", {
   defaults: {},
 
-  _active:    false,
+  _active:    true,
   _state:     "stopped",   // stopped | running | editing
   _total:     300,         // seconds (default 5 min)
   _remaining: 300,
@@ -19,6 +19,7 @@ Module.register("MMM-Timer", {
   },
 
   notificationReceived(notification, payload) {
+    if (notification === "MODULE_DOM_CREATED") { this._render(); return; }
     if (notification === "MODULE_ACTIVATED") {
       this._active = (payload.id === this.name);
       this._render();

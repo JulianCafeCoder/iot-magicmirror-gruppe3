@@ -1,7 +1,7 @@
 Module.register("MMM-Notes", {
   defaults: {},
 
-  _active: false,
+  _active: true,
   _text:   "",
 
   start() {
@@ -18,6 +18,7 @@ Module.register("MMM-Notes", {
   },
 
   notificationReceived(notification, payload) {
+    if (notification === "MODULE_DOM_CREATED") { this._render(); return; }
     if (notification === "MODULE_ACTIVATED") {
       this._active = (payload.id === this.name);
       this._render();

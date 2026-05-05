@@ -145,31 +145,6 @@ const PAGES = {
         }
       ]
     },
-    {
-      pageClass: "biz-tools",
-      modules: [
-        {
-          module: "developer/MMM-Timer",
-          position: "top_left",
-          header: "Timer"
-        },
-        {
-          module: "developer/MMM-Stopwatch",
-          position: "top_right",
-          header: "Stoppuhr"
-        },
-        {
-          module: "developer/MMM-Dice",
-          position: "bottom_left",
-          header: "Würfel"
-        },
-        {
-          module: "developer/MMM-Notes",
-          position: "bottom_right",
-          header: "Notizen"
-        }
-      ]
-    }
     // Weitere Business-Seiten hier einfügen:
     // { pageClass: "biz-analytics", modules: [ ... ] },
   ],
@@ -216,31 +191,6 @@ const PAGES = {
         }
       ]
     },
-    {
-      pageClass: "priv-tools",
-      modules: [
-        {
-          module: "developer/MMM-Timer",
-          position: "top_left",
-          header: "Timer"
-        },
-        {
-          module: "developer/MMM-Stopwatch",
-          position: "top_right",
-          header: "Stoppuhr"
-        },
-        {
-          module: "developer/MMM-Dice",
-          position: "bottom_left",
-          header: "Würfel"
-        },
-        {
-          module: "developer/MMM-Notes",
-          position: "bottom_right",
-          header: "Notizen"
-        }
-      ]
-    }
     // Weitere Private-Seiten hier einfügen:
     // { pageClass: "priv-fitness", modules: [ ... ] },
   ],
@@ -275,6 +225,19 @@ const PAGES = {
     }
     // Weitere Developer-Seiten hier einfügen:
     // { pageClass: "dev-performance", modules: [ ... ] },
+  ],
+
+  // ── Letzte Seite für ALLE Modi (wird immer ans Ende angehängt) ───────────
+  shared_end: [
+    {
+      pageClass: "shared-tools",
+      modules: [
+        {
+          module: "developer/MMM-Launcher",
+          position: "middle_center"
+        }
+      ]
+    }
   ]
 };
 
@@ -286,7 +249,7 @@ const PAGES = {
 // Business/Private: shared + moduspezifische Seiten
 const activePages = USAGE_TYPE === "developer"
   ? [...PAGES.shared, ...PAGES.business, ...PAGES.private, ...PAGES.developer]
-  : [...PAGES.shared, ...PAGES[USAGE_TYPE]];
+  : [...PAGES.shared, ...PAGES[USAGE_TYPE], ...PAGES.shared_end];
 
 // MMM-pages erwartet ein Array von Arrays der pageClasses je Seite
 const pagesMatrix = activePages.map((p) => [p.pageClass]);

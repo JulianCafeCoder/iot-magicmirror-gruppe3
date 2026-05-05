@@ -1,7 +1,7 @@
 Module.register("MMM-Stopwatch", {
   defaults: {},
 
-  _active:   false,
+  _active:   true,
   _running:  false,
   _elapsed:  0,      // ms
   _base:     0,      // ms at last pause
@@ -18,6 +18,7 @@ Module.register("MMM-Stopwatch", {
   },
 
   notificationReceived(notification, payload) {
+    if (notification === "MODULE_DOM_CREATED") { this._render(); return; }
     if (notification === "MODULE_ACTIVATED") {
       this._active = (payload.id === this.name);
       this._render();

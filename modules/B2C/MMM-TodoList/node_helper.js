@@ -4,7 +4,7 @@ const fs         = require("fs");
 const path       = require("path");
 
 const DB_CONFIG = {
-  host:                    process.env.PG_HOST || "10.93.135.91",
+  host:                    process.env.PG_HOST || "10.93.143.200",
   port:                    5432,
   database:                "postgres",
   user:                    "gruppe3",

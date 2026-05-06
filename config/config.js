@@ -53,20 +53,6 @@ const PAGES = {
           position: "top_left"
         },
         {
-          module: "calendar",
-          header: "Kalender",
-          position: "top_left",
-          config: {
-            calendars: [
-              {
-                fetchInterval: 7 * 24 * 60 * 60 * 1000,
-                symbol: "calendar-check",
-                url: "https://ics.calendarlabs.com/76/mm3137/US_Holidays.ics"
-              }
-            ]
-          }
-        },
-        {
           module: "compliments",
           position: "lower_third"
         },
@@ -172,6 +158,25 @@ const PAGES = {
       ]
     },
     {
+      pageClass: "priv-calendar",
+      modules: [
+        {
+          module: "calendar",
+          header: "Kalender",
+          position: "top_left",
+          config: {
+            calendars: [
+              {
+                fetchInterval: 7 * 24 * 60 * 60 * 1000,
+                symbol: "calendar-check",
+                url: "https://ics.calendarlabs.com/76/mm3137/US_Holidays.ics"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       pageClass: "priv-smarthome",
       modules: [
         {
@@ -191,6 +196,27 @@ const PAGES = {
         }
       ]
     },
+    {
+      pageClass: "priv-finance",
+      modules: [
+        {
+          module: "B2C/MMM-FinanceDashboard",
+          position: "fullscreen_above",
+          header: "Finanzen",
+          config: {
+            watchlist: ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "BRK-B", "JPM", "V"],
+            portfolio: [
+              // Eigene Positionen hier eintragen:
+              // { symbol: "AAPL", shares: 10, avgPrice: 150.00 },
+              // { symbol: "NVDA", shares: 5,  avgPrice: 400.00 },
+              // { symbol: "MSFT", shares: 8,  avgPrice: 300.00 },
+            ],
+            updateInterval: 5 * 60 * 1000,
+            sparklineDays: 14,
+          }
+        }
+      ]
+    },
     // Weitere Private-Seiten hier einfügen:
     // { pageClass: "priv-fitness", modules: [ ... ] },
   ],
@@ -199,6 +225,25 @@ const PAGES = {
   // Developer sieht ALLE Seiten (shared + business + private + developer).
   // Diese Seiten sind zusätzlich zu den anderen Modi sichtbar.
   developer: [
+    {
+      pageClass: "dev-calendar",
+      modules: [
+        {
+          module: "calendar",
+          header: "Kalender",
+          position: "top_left",
+          config: {
+            calendars: [
+              {
+                fetchInterval: 7 * 24 * 60 * 60 * 1000,
+                symbol: "calendar-check",
+                url: "https://ics.calendarlabs.com/76/mm3137/US_Holidays.ics"
+              }
+            ]
+          }
+        }
+      ]
+    },
     {
       pageClass: "dev-git",
       modules: [

@@ -39,7 +39,7 @@
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--color-text-dimmed, #aaa);
+  color: var(--color-text-dimmed, rgba(255, 255, 255, 0.55));
   display: flex;
   align-items: center;
   gap: 5px;
@@ -58,7 +58,7 @@
   border-radius: 10px;
   padding: 0 6px;
   font-size: 10px;
-  color: var(--color-text-dimmed, #aaa);
+  color: var(--color-text-dimmed, rgba(255, 255, 255, 0.55));
 }
 
 /* ---- Cards ---- */
@@ -87,7 +87,7 @@
 
 .scrum-card--done .scrum-card-title {
   text-decoration: line-through;
-  color: var(--color-text-dimmed, #aaa);
+  color: var(--color-text-dimmed, rgba(255, 255, 255, 0.55));
 }
 
 .scrum-card-meta {
@@ -95,7 +95,7 @@
   justify-content: space-between;
   align-items: center;
   font-size: 10px;
-  color: var(--color-text-dimmed, #aaa);
+  color: var(--color-text-dimmed, rgba(255, 255, 255, 0.55));
 }
 
 .scrum-card-assignee {
@@ -109,7 +109,7 @@
   border-radius: 4px;
   padding: 1px 5px;
   font-size: 10px;
-  color: var(--color-text-dimmed, #aaa);
+  color: var(--color-text-dimmed, rgba(255, 255, 255, 0.55));
 }
 
 .scrum-card-time {
@@ -134,7 +134,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-text-dimmed, #aaa);
+  color: var(--color-text-dimmed, rgba(255, 255, 255, 0.55));
   margin-bottom: 8px;
   display: flex;
   align-items: center;

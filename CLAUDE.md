@@ -93,7 +93,7 @@ Every MagicMirror module has two parts:
 
 ### Database (PostgreSQL)
 
-Several modules read from a shared PostgreSQL instance at `10.93.132.254:5432`, user/db `gruppe3/postgres`. The connection host can be overridden with the `PG_HOST` environment variable. Modules fall back gracefully when the DB is unavailable.
+Several modules read from a shared PostgreSQL instance at `10.93.143.19:5432`, user/db `gruppe3/postgres`. The connection host can be overridden with the `PG_HOST` environment variable. Modules fall back gracefully when the DB is unavailable.
 
 Schema files must be applied in order (CompanyCalendar schema first, as others reference `mm_users`):
 

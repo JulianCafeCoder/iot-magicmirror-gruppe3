@@ -8,7 +8,7 @@ const { exec }   = require("child_process");
 const SERVICES = [
   { id: "backend",  label: "MM Backend",   type: "self"  },
   { id: "frontend", label: "MM Frontend",  type: "nc",    host: "localhost", port: 8081 },
-  { id: "database", label: "Datenbank",    type: "nc",    host: "10.93.132.254", port: 5432 },
+  { id: "database", label: "Datenbank",    type: "nc",    host: "10.93.143.19", port: 5432 },
   { id: "mqtt",     label: "MQTT Broker",  type: "port",  host: "localhost", port: 1883 },
   { id: "internet", label: "Internet",     type: "https", host: "1.1.1.1"              },
 ];

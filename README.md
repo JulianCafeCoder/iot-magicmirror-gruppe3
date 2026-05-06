@@ -200,7 +200,7 @@ cd modules/developer/MMM-EnergyDashboard
 npm install
 ```
 
-Die Datenbankverbindung wird im Modul konfiguriert. Standard-Host: `10.93.132.254:5432`.
+Die Datenbankverbindung wird im Modul konfiguriert. Standard-Host: `10.93.143.19:5432`.
 
 ### MMM-ServiceStatus
 
@@ -210,7 +210,7 @@ Prüft alle 30 Sekunden, ob folgende Dienste erreichbar sind:
 |---|---|---|
 | MM Backend | intern | – |
 | MM Frontend | TCP | localhost:8081 |
-| Datenbank | TCP | 10.93.132.254:5432 |
+| Datenbank | TCP | 10.93.143.19:5432 |
 | MQTT Broker | TCP | localhost:1883 |
 | Internet | HTTPS | 1.1.1.1 |
 

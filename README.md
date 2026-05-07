@@ -1,156 +1,95 @@
-# MagicMirror² – Eigener Setup
+# MagicMirror² – Gruppe 3 (FES Wiesbaden)
 
-Dieses Repository ist ein angepasstes [MagicMirror²](https://magicmirror.builders)-Projekt mit profilbasierter Konfiguration, Docker-Unterstützung für den Raspberry Pi und selbst entwickelten Modulen für Lichtsteuerung, Energie-Dashboard und mehr.
-
----
-
-## Inhaltsverzeichnis
-
-1. [Voraussetzungen](#voraussetzungen)
-2. [Schnellstart (lokale Entwicklung)](#schnellstart-lokale-entwicklung)
-3. [Konfiguration: profile.js](#konfiguration-profilejs)
-4. [Nutzungsmodi](#nutzungsmodi)
-5. [Docker / Raspberry Pi](#docker--raspberry-pi)
-6. [Kiosk-Modus](#kiosk-modus)
-7. [Seiten-Navigation](#seiten-navigation)
-8. [Eigene Module](#eigene-module)
-9. [Hardware: ESP32-Lichtsteuerung](#hardware-esp32-lichtsteuerung)
-10. [Neue Seiten hinzufügen](#neue-seiten-hinzufügen)
+> **Schulprojekt IoT – Fachschule für Elektrotechnik und Informatik Wiesbaden**
+> Dieses Repository enthält das vollständige MagicMirror²-Projekt von Gruppe 3.
 
 ---
 
-## Voraussetzungen
+## Team
 
-| Komponente | Version / Hinweis |
-|---|---|
-| Node.js | 22 (LTS) |
-| npm | kommt mit Node.js |
-| Docker + Docker Compose | nur für Pi-Betrieb nötig |
-| MQTT-Broker (Mosquitto) | für `MMM-LightSwitches` |
-| PostgreSQL | für `MMM-EnergyDashboard` |
+| Name   | GitHub          | Rolle                                      |
+|--------|-----------------|-------------------------------------------|
+| Julian | JulianCafeCoder | Architektur, Konfiguration, Module (B2C/Dev) |
+| Peter  | –               | Framework-Basis, Infrastruktur             |
+| Joel   | –               | MMM-RezeptListe                            |
 
 ---
 
-## Schnellstart (lokale Entwicklung)
+## Was ist MagicMirror²?
 
-```bash
-# 1. Abhängigkeiten installieren
-npm install
-
-# 2. Profil anlegen (einmalig)
-cp config/profile.example.js config/profile.js
-# Dann profile.js nach Bedarf anpassen (siehe unten)
-
-# 3. MagicMirror starten
-npm start
-```
-
-Der Browser öffnet sich automatisch unter `http://localhost:8081`.
+[MagicMirror²](https://magicmirror.builders) ist ein Open-Source-Framework für smarte Spiegel und Info-Displays auf Basis von Node.js + Electron. Wir haben es auf einem **Raspberry Pi** betrieben und mit eigenen Modulen erweitert.
 
 ---
 
-## Konfiguration: profile.js
+## Projektübersicht – Eigene Entwicklungen
 
-Die Datei `config/profile.js` ist **gerätespezifisch** und nicht im Git enthalten. Sie steuert den Nutzungsmodus, den Standort und das Seiten-Timing.
+Alle selbst entwickelten Module sind in `modules/` unterteilt nach Zielgruppe:
 
-```bash
-cp config/profile.example.js config/profile.js
-```
+### B2B-Module (`modules/B2B/`)
 
-Inhalt der Datei:
+| Modul                 | Beschreibung                                                                 |
+|-----------------------|------------------------------------------------------------------------------|
+| **MMM-ScrumBoard**    | Digitales Scrum-Board mit Spalten (To-Do / In Progress / Done), Aufgaben per Tastatur steuerbar |
+| **MMM-FinanceDashboard** | Finanz-Übersicht (Kurse, Portfolio)                                      |
 
-```js
-module.exports = {
-  // "business" | "private" | "developer"
-  USAGE_TYPE: "business",
+### B2C-Module (`modules/B2C/`)
 
-  // Koordinaten für das Wettermodul
-  LOCATION: {
-    lat:  48.1351,
-    lon:  11.5820,
-    name: "München",
-  },
+| Modul                 | Beschreibung                                                                 |
+|-----------------------|------------------------------------------------------------------------------|
+| **MMM-TodoList**      | Interaktive To-Do-Liste mit PostgreSQL-Backend; Aufgaben browsen, hinzufügen, abhaken, löschen – alles per Tastatur, User-ID-basiert gefiltert |
+| **MMM-Stundenplan**   | Schulstundenplan aus PostgreSQL-Datenbank, automatisch nach Woche gefiltert  |
+| **MMM-RezeptListe**   | Rezeptsammlung – Anzeige von Rezepten mit Zutaten und Anleitung              |
 
-  // Wie lange jede Seite angezeigt wird (Millisekunden)
-  PAGE_TIMING_MS: 15000,
-};
-```
+### Developer-Module (`modules/developer/`)
 
-Fehlt die Datei, startet MagicMirror mit den Standardwerten (`business`, München, 15 s).
-
----
-
-## Nutzungsmodi
-
-| Modus | Angezeigte Seiten |
-|---|---|
-| `business` | Haupt-Dashboard (Uhr, Wetter, Kalender, News) + Scrum Board |
-| `private` | Haupt-Dashboard + persönlicher Kalender + To-Do-Liste |
-| `developer` | **Nur** die Seiten aus `modules/developer/` (kein Haupt-Dashboard) |
-
-Der Modus wird in `config/profile.js` über `USAGE_TYPE` gesetzt.
+| Modul                    | Beschreibung                                                              |
+|--------------------------|---------------------------------------------------------------------------|
+| **MMM-CompanyCalendar**  | 4-Wochen-Vollbild-Kalender mit Mitarbeiter-Legende, Datenbankanbindung    |
+| **MMM-EnergyDashboard**  | Echtzeit-Visualisierung von Solar-, Haus-, Batterie- und Netzwerten aus PostgreSQL |
+| **MMM-LightSwitches**    | 8 physische Lichtschalter über MQTT; steuert echte ESP32-Hardware         |
+| **MMM-Dictation**        | Spracheingabe: MediaRecorder → Whisper (Groq API) → LLaMA → Aktionsbefehl |
+| **MMM-ServiceStatus**    | Überwacht alle 30 s: MM-Backend, Datenbank, MQTT-Broker, Internet         |
+| **MMM-GitInfo**          | Zeigt Branch, letzten Commit und Git-Status des laufenden Projekts        |
+| **MMM-Launcher**         | App-/Link-Starter für den Developer-Modus                                 |
+| **MMM-Notes**            | Notizen-Modul                                                             |
+| **MMM-Stopwatch**        | Stoppuhr                                                                  |
+| **MMM-Timer**            | Countdown-Timer                                                           |
+| **MMM-Dice**             | Würfel-Animation                                                          |
 
 ---
 
-## Docker / Raspberry Pi
+## Technische Highlights
 
-Das Projekt läuft auf dem Raspberry Pi als Docker-Container im Server-Only-Modus. Der Browser auf dem Pi lädt die Oberfläche von `localhost:8081`.
-
-### Einmalige Einrichtung auf dem Pi
-
-```bash
-# 1. profile.js auf dem Pi anlegen
-cp config/profile.example.js config/profile.js
-nano config/profile.js
-
-# 2. Image bauen und Container starten
-docker compose up -d
-```
-
-### Nützliche Befehle
-
-```bash
-docker compose up -d          # Container starten (im Hintergrund)
-docker compose down           # Container stoppen
-docker compose logs -f        # Logs live verfolgen
-docker compose build --no-cache  # Image neu bauen (nach Code-Änderungen)
-```
-
-**Hinweis:** `network_mode: host` im `docker-compose.yml` ist Linux-only (funktioniert auf dem Pi, nicht auf macOS).
+- **Profilbasierte Konfiguration** – eine `config/profile.js` steuert Modus (`business` / `private` / `developer`), Standort und Seiten-Timing; keine Änderung an der Hauptkonfiguration nötig
+- **Mehrseitiges Layout** – Navigation per Pfeiltasten, automatische Rotation, Seiten-Indikator
+- **PostgreSQL-Integration** – mehrere Module teilen eine gemeinsame Datenbankinstanz (`gruppe3@10.93.143.200:5432`); Schema-Migration-Skripte inklusive
+- **MQTT + ESP32-Hardware** – `MMM-LightSwitches` kommuniziert über MQTT mit selbst entwickelter ESP32-Firmware (`hardware/esp32-lights/`)
+- **KI-Sprachsteuerung** – `MMM-Dictation` nutzt Groq (Whisper + LLaMA) für Sprachbefehle in Echtzeit
+- **Docker-Deployment** – `Dockerfile` + `docker-compose.yml` für den Pi-Betrieb; Chromium-Kiosk-Modus via `scripts/kiosk.sh`
+- **Helles/Dunkles Theme** – umschaltbar über `DISPLAY_MODE` in `profile.js`
 
 ---
 
-## Kiosk-Modus
+## Architektur
 
-Das Skript `scripts/kiosk.sh` startet Chromium im Vollbild-Kiosk-Modus, sobald der MagicMirror-Server erreichbar ist. Es läuft direkt auf dem Pi-Host (nicht im Container).
-
-### Einrichtung (einmalig auf dem Pi)
-
-```bash
-chmod +x scripts/kiosk.sh
 ```
-
-**Autostart beim Booten** – Option 1: `crontab`
-
-```bash
-crontab -e
-# Folgende Zeile hinzufügen:
-@reboot /home/pi/MagicMirror/scripts/kiosk.sh &
-```
-
-**Autostart beim Booten** – Option 2: `.desktop`-Datei
-
-```bash
-mkdir -p ~/.config/autostart
-cat > ~/.config/autostart/kiosk.desktop <<EOF
-[Desktop Entry]
-Type=Application
-Exec=/home/pi/MagicMirror/scripts/kiosk.sh
-Hidden=false
-NoDisplay=false
-X-GNOME-Autostart-enabled=true
-Name=MagicMirror Kiosk
-EOF
+Browser (Electron / Chromium auf Pi)
+        │
+        │  HTTP / WebSocket
+        ▼
+  MagicMirror²-Server (Node.js :8081)
+        │
+   ┌────┴────────────────────────────────┐
+   │  Modul-Node-Helpers (serverseitig)  │
+   │  ┌──────────────┐  ┌─────────────┐ │
+   │  │  PostgreSQL  │  │  MQTT-Broker│ │
+   │  │  (Kalender,  │  │  (Lichter)  │ │
+   │  │  Todo, etc.) │  └──────┬──────┘ │
+   │  └──────────────┘         │        │
+   └───────────────────────────┼────────┘
+                               │ MQTT
+                          ESP32-Hardware
+                         (Lichtschalter)
 ```
 
 ---
@@ -158,117 +97,108 @@ EOF
 ## Seiten-Navigation
 
 | Taste | Aktion |
-|---|---|
+|-------|--------|
 | `→` Pfeil rechts | Nächste Seite |
 | `←` Pfeil links | Vorherige Seite |
 
-Die Seiten rotieren außerdem automatisch nach `PAGE_TIMING_MS` Millisekunden (Standard: 15 s). Im `developer`-Modus ist die automatische Rotation deaktiviert.
+Automatische Rotation nach `PAGE_TIMING_MS` ms (konfigurierbar). Punkte-Indikator unten zeigt die aktuelle Seite.
 
 ---
 
-## Eigene Module
+## Nutzungsmodi
 
-Alle selbst entwickelten Module liegen unter `modules/developer/`.
+| Modus | Angezeigte Module |
+|-------|-------------------|
+| `business` | Uhr, Wetter, News, Firmenkalender, Scrum-Board |
+| `private` | Uhr, Wetter, News, To-Do-Liste, Stundenplan, Rezepte |
+| `developer` | Energie-Dashboard, Lichtschalter, Service-Status, Git-Info, Dictation, Launcher, Timer, etc. |
 
-### MMM-LightSwitches
+---
 
-Zeigt 8 Lichtschalter und steuert echte Geräte über MQTT.
+## Projekt lokal starten
 
-- **MQTT-Topics:** `home/lights/<n>/set` (Befehl) / `home/lights/<n>/status` (Zustand)
-- **Broker:** wird unter `localhost:1883` erwartet
-- **Abhängigkeit:** `mqtt` npm-Paket (in `package.json` des Moduls)
+### Voraussetzungen
 
-```bash
-cd modules/developer/MMM-LightSwitches
-npm install
-```
-
-### MMM-EnergyDashboard
-
-Visualisiert Solar-, Haus-, Batterie- und Netzwerte aus einer PostgreSQL-Datenbank.
-
-**Datenbank einrichten (einmalig):**
-
-```bash
-psql -U <user> -d <datenbank> -f modules/developer/MMM-EnergyDashboard/schema.sql
-```
-
-**Abhängigkeit installieren:**
-
-```bash
-cd modules/developer/MMM-EnergyDashboard
-npm install
-```
-
-Die Datenbankverbindung wird im Modul konfiguriert. Standard-Host: `10.93.143.200:5432`.
-
-### MMM-ServiceStatus
-
-Prüft alle 30 Sekunden, ob folgende Dienste erreichbar sind:
-
-| Service | Typ | Adresse |
-|---|---|---|
-| MM Backend | intern | – |
-| MM Frontend | TCP | localhost:8081 |
-| Datenbank | TCP | 10.93.143.200:5432 |
-| MQTT Broker | TCP | localhost:1883 |
-| Internet | HTTPS | 1.1.1.1 |
-
-### MMM-GitInfo
-
-Zeigt Informationen über das lokale Git-Repository (Branch, letzter Commit, Status).
-
-### Weitere Module
-
-| Modul | Beschreibung |
+| Komponente | Version |
 |---|---|
-| `MMM-Launcher` | App-/Link-Starter für den Developer-Modus |
-| `MMM-Dice` | Würfel-Modul |
-| `MMM-Notes` | Notizen-Modul |
-| `MMM-Stopwatch` | Stoppuhr |
-| `MMM-Timer` | Timer |
+| Node.js | 22 (LTS) |
+| PostgreSQL | optional (Module fallen auf Demo-Daten zurück) |
+| MQTT-Broker | optional (nur für MMM-LightSwitches) |
+
+### Schnellstart
+
+```bash
+# 1. Abhängigkeiten installieren
+npm install
+
+# 2. Profil anlegen
+cp config/profile.example.js config/profile.js
+# USAGE_TYPE auf "business", "private" oder "developer" setzen
+
+# 3. Starten
+npm start
+```
+
+Öffnet sich automatisch unter `http://localhost:8081`.
+
+### Datenbankschemas einrichten (optional)
+
+```bash
+psql -U gruppe3 -d postgres -f modules/developer/MMM-CompanyCalendar/schema.sql
+psql -U gruppe3 -d postgres -f modules/B2C/MMM-TodoList/schema.sql
+psql -U gruppe3 -d postgres -f modules/B2C/MMM-Stundenplan/schema.sql
+psql -U gruppe3 -d postgres -f modules/developer/MMM-EnergyDashboard/schema.sql
+```
+
+---
+
+## Raspberry Pi / Docker
+
+```bash
+# Einmalig auf dem Pi
+cp config/profile.example.js config/profile.js
+nano config/profile.js
+
+# Container starten
+docker compose up -d
+
+# Kiosk-Modus (Chromium Vollbild)
+chmod +x scripts/kiosk.sh
+# In crontab: @reboot /home/pi/MagicMirror/scripts/kiosk.sh &
+```
 
 ---
 
 ## Hardware: ESP32-Lichtsteuerung
 
-Der Quellcode für die ESP32-Firmware liegt unter `hardware/esp32-lights/`.
+Quellcode unter `hardware/esp32-lights/`:
 
 | Datei | Inhalt |
 |---|---|
-| `esp32-lights.ino` | Arduino-Sketch (MQTT-Client, Lichtsteuerung) |
-| `platformio.ini` | PlatformIO-Projektkonfiguration |
+| `esp32-lights.ino` | Arduino-Sketch (MQTT-Client, 8 Relais) |
+| `platformio.ini` | PlatformIO-Konfiguration |
 | `WIRING.md` | Verdrahtungsplan |
+| `config.h.example` | Vorlage für WLAN/MQTT-Zugangsdaten |
 
-**Wichtig:** Zugangsdaten (WLAN, MQTT) werden in einer `config.h` gepflegt, die **nicht** im Git liegt (in `.gitignore` eingetragen). Vorlage anlegen und anpassen:
-
-```bash
-cp hardware/esp32-lights/config.h.example hardware/esp32-lights/config.h
-```
+MQTT-Topics: `home/lights/<n>/set` (Befehl) / `home/lights/<n>/status` (Zustand)
 
 ---
 
-## Neue Seiten hinzufügen
+## Repository-Struktur
 
-1. Öffne `config/config.js`
-2. Trage einen neuen Eintrag im gewünschten Abschnitt (`shared`, `business`, `private` oder `developer`) ein:
-
-```js
-{
-  pageClass: "biz-meine-seite",   // eindeutige CSS-Klasse
-  modules: [
-    {
-      module: "mein-modul",
-      position: "top_left",
-      header: "Mein Modul",
-      config: { /* ... */ }
-    }
-  ]
-}
 ```
-
-3. MagicMirror neu starten – die neue Seite erscheint automatisch in der Rotation.
-
-**Regeln:**
-- `pageClass` muss einmalig und eindeutig sein (z. B. `biz-analytics`, `priv-fitness`)
-- Module im `developer`-Abschnitt müssen unter `modules/developer/<MMM-Name>/` liegen
+MagicMirror/
+├── config/
+│   ├── config.js            # Haupt-Konfiguration (Seiten, Module)
+│   └── profile.example.js   # Vorlage für gerätespezifische Einstellungen
+├── modules/
+│   ├── B2B/                 # Business-Module (Scrum, Finance)
+│   ├── B2C/                 # Consumer-Module (Todo, Stundenplan, Rezepte)
+│   └── developer/           # Developer/IoT-Module (Energy, Lights, Dictation, …)
+├── hardware/
+│   └── esp32-lights/        # ESP32-Firmware für Lichtsteuerung
+├── scripts/
+│   └── kiosk.sh             # Chromium-Kiosk-Autostart
+├── Dockerfile
+└── docker-compose.yml
+```

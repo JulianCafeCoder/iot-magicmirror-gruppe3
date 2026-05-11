@@ -1,0 +1,23 @@
+/*
+ * MMM-MotionSensor — Styling
+ *
+ * Eine einzige Klasse: .ms-overlay = der schwarze Vorhang.
+ * Wir benutzen "position: fixed" + "inset: 0" um das gesamte Browserfenster
+ * abzudecken, egal wie groß es ist. opacity wird per .ms-dim umgeschaltet,
+ * sodass das Aus-/Einblenden flüssig animiert wird.
+ */
+
+.ms-overlay {
+  position: fixed;          /* relativ zum Viewport, NICHT zum Container */
+  inset: 0;                 /* top:0; right:0; bottom:0; left:0; */
+  background: #000;
+  opacity: 0;               /* Standard: unsichtbar */
+  pointer-events: none;     /* Klicks "durchlassen", nichts blocken */
+  transition: opacity 800ms ease;   /* sanftes Fade (Dauer wird im JS überschrieben) */
+  z-index: 9999;            /* über allen Modulen */
+}
+
+/* Wird via JS hinzugefügt, sobald der Timer abgelaufen ist. */
+.ms-overlay.ms-dim {
+  opacity: 1;
+}

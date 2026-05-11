@@ -1,0 +1,9 @@
+{
+  "name": "mmm-motionsensor",
+  "version": "1.0.0",
+  "description": "MagicMirror module – PIR motion sensor via MQTT, dims the mirror when nobody is present",
+  "main": "MMM-MotionSensor.js",
+  "dependencies": {
+    "mqtt": "^5.10.1"
+  }
+}

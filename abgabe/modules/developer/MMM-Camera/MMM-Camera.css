@@ -1,0 +1,63 @@
+/*
+ * MMM-Camera — Styling für die Webcam-Vorschau
+ *
+ * Aufbau (vom JS gebaut):
+ *
+ *   .cam-wrap                   ← Rahmen
+ *     ├── .cam-video            ← der Live-Stream
+ *     ├── .cam-canvas           ← absolut darüber, blaue Boxen
+ *     └── .cam-count            ← kleine Beschriftung am unteren Rand
+ *
+ * Sowohl Video als auch Canvas werden horizontal gespiegelt (scaleX(-1)),
+ * damit das Bild sich wie ein echter Spiegel anfühlt.
+ */
+
+.cam-wrap {
+  position: relative;        /* Canvas + Beschriftung werden absolut platziert */
+  display: inline-block;
+  border-radius: 6px;
+  overflow: hidden;          /* runde Ecken auch fürs Video */
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Optional: Modul komplett verstecken (1×1 px, transparent), aber DOM bleibt
+   aktiv, damit die Webcam-Erkennung weiterläuft. */
+.cam-wrap.cam-hidden {
+  position: absolute;
+  width: 1px !important;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cam-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: scaleX(-1);     /* spiegeln — fühlt sich wie ein echter Spiegel an */
+}
+
+/* Canvas liegt deckungsgleich über dem Video */
+.cam-canvas {
+  position: absolute;
+  inset: 0;                  /* top/right/bottom/left = 0 */
+  width: 100%;
+  height: 100%;
+  transform: scaleX(-1);     /* gleiche Spiegelung wie Video → Boxen passen */
+  pointer-events: none;      /* Canvas blockiert keine Klicks */
+}
+
+/* Kleiner Text "2 Gesichter" o. ä. am unteren Rand */
+.cam-count {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 4px 8px;
+  font-size: 14px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  text-align: center;
+}

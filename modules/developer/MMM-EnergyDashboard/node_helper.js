@@ -35,11 +35,11 @@ const DUMMY = [
 // Passe host/database/user/password an eure Datenbank an.
 // Solange die DB nicht verfügbar ist, werden automatisch die Dummy-Daten genutzt.
 const DB_CONFIG = {
-  host:     "localhost",
+  host:     process.env.PG_HOST || "10.93.143.200",
   port:     5432,
-  database: "magicmirror",
-  user:     "magicmirror",
-  password: "magicmirror",
+  database: "postgres",
+  user:     "gruppe3",
+  password: "gruppe3",
   connectionTimeoutMillis: 3000,
 };
 

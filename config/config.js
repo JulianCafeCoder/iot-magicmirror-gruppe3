@@ -193,6 +193,16 @@ const PAGES = {
           module: "developer/MMM-EnergyDashboard",
           position: "top_right",
           header: "Energie"
+        },
+        {
+          module: "developer/MMM-Camera",
+          position: "bottom_right",
+          header: "Kamera",
+          config: {
+            showPreview: true,
+            previewWidth: 240,
+            drawDetections: true
+          }
         }
       ]
     },
@@ -350,6 +360,17 @@ let config = {
       }
     },
 
+    // ── Bewegungsmelder (ESP32 + HC-SR501 via MQTT) ──────────────────────
+    // Legt ein schwarzes Overlay über den Spiegel, wenn keine Bewegung
+    // mehr erkannt wird. Wacht bei neuer Bewegung sofort auf.
+    {
+      module: "developer/MMM-MotionSensor",
+      config: {
+        dimDelaySec: 60,
+        fadeMs: 800,
+      }
+    },
+
     // ── Tastatur-Navigation (Pfeiltasten → MMM-pages) ─────────────────────
     {
       module: "MMM-KeyBindings",
@@ -391,7 +412,7 @@ let config = {
       module: "MMM-pages",
       config: {
         modules: pagesMatrix,
-        fixed: ["alert", "updatenotification", "MMM-KeyBindings", "MMM-Dictation", "MMM-page-indicator", "MMM-Theme"],
+        fixed: ["alert", "updatenotification", "MMM-KeyBindings", "MMM-Dictation", "MMM-MotionSensor", "MMM-page-indicator", "MMM-Theme"],
         timings: { default: 0 },  // kein Auto-Blättern – nur Pfeiltasten
         animationTime: 800
       }

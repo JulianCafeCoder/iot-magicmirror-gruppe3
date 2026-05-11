@@ -13,14 +13,6 @@
 | Peter  | –               | Framework-Basis, Infrastruktur             |
 | Joel   | –               | MMM-RezeptListe                            |
 
----
-
-## Was ist MagicMirror²?
-
-[MagicMirror²](https://magicmirror.builders) ist ein Open-Source-Framework für smarte Spiegel und Info-Displays auf Basis von Node.js + Electron. Wir haben es auf einem **Raspberry Pi** betrieben und mit eigenen Modulen erweitert.
-
----
-
 ## Projektübersicht – Eigene Entwicklungen
 
 Alle selbst entwickelten Module sind in `modules/` unterteilt nach Zielgruppe:

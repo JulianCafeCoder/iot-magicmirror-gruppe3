@@ -1,0 +1,9 @@
+{
+  "name": "mmm-lightswitches",
+  "version": "1.0.0",
+  "description": "MagicMirror module – MQTT light switch panel",
+  "main": "MMM-LightSwitches.js",
+  "dependencies": {
+    "mqtt": "^5.10.1"
+  }
+}
